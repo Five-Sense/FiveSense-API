@@ -2,7 +2,7 @@
 
 ## Banco Supabase
 
-O padrão configurado para este ambiente é o PostgreSQL do projeto Supabase informado. Preencha `DATABASE_PASSWORD` no `.env` com a **senha do banco** obtida em Supabase Dashboard → Project Settings → Database. Ela não é a senha da conta Supabase. A URL JDBC usa SSL obrigatório e mantém a senha fora da URL.
+`DATABASE_URL` aponta para o projeto Supabase que a API usará. O `.env.example` mostra onde substituir `<PROJECT_REF>` pelo identificador do seu projeto, visível em Supabase → Connect. O `.env` local está preenchido com o host presente na URL que você enviou nesta conversa; troque-o se quiser usar outro projeto. Preencha `DATABASE_PASSWORD` com a senha do banco em Supabase → Project Settings → Database. Ela não é a senha da conta Supabase. A URL JDBC usa SSL e mantém a senha fora da URL.
 
 ```properties
 DATABASE_URL=jdbc:postgresql://db.gsuivuscizpkbtwedhku.supabase.co:5432/postgres?sslmode=require
