@@ -10,6 +10,7 @@ API de avaliação mobile implementada como monólito Spring MVC com PostgreSQL 
 - Cadastro de usuário ativo por `POST /api/v1/users`.
 - Rotas abertas; o campo `role` é informativo.
 - CRUD de equipes, problemas e materiais; criação e listagem de ocorrências.
+- [x] Imagem temporária na ocorrência: upload em `POST /occurrences/images`, anexo no e-mail e exclusão após o envio, sem persistência no banco (decisão 0004).
 - Flyway com schema inicial correspondente ao modelo atual.
 - Configuração do Supabase em `.env.example` e carregamento local por `.env`.
 - Referência pesquisável dos endpoints em `docs/site/index.html`.

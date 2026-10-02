@@ -6,8 +6,10 @@ import java.util.UUID;
 
 public final class OccurrenceDtos {
     private OccurrenceDtos() {}
-    public record CreateRequest(@NotNull UUID problemId,@NotNull UUID materialId,@NotNull @Positive Integer affectedQuantity,@NotNull UUID reportedByUserId) {
-        public CreateRequest(UUID problemId,UUID materialId,Integer affectedQuantity){this(problemId,materialId,affectedQuantity,new UUID(0,0));}
+    public record CreateRequest(@NotNull UUID problemId,@NotNull UUID materialId,@NotNull @Positive Integer affectedQuantity,@NotNull UUID reportedByUserId,UUID imageId) {
+        public CreateRequest(UUID problemId,UUID materialId,Integer affectedQuantity){this(problemId,materialId,affectedQuantity,new UUID(0,0),null);}
+        public CreateRequest(UUID problemId,UUID materialId,Integer affectedQuantity,UUID reportedByUserId){this(problemId,materialId,affectedQuantity,reportedByUserId,null);}
     }
     public record Response(UUID id,UUID problemId,UUID materialId,UUID reportedByUserId,int affectedQuantity,Instant createdAt) {}
+    public record ImageUploadResponse(UUID imageId) {}
 }

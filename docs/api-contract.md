@@ -44,10 +44,11 @@ O cadastro público do primeiro usuário é também o onboarding inicial. A resp
 | GET | `/materials/stock` | Visão geral do estoque |
 | GET | `/materials/options` | Opções `id`/`name` para ocorrência |
 | POST/PUT/DELETE | `/materials[/{id}]` | CRUD; create `201`, delete `204` |
-| POST | `/occurrences` | `{ "problemId": "<uuid>", "materialId": "<uuid>", "affectedQuantity": 2, "reportedByUserId": "<uuid>" }`; `201 Created` |
+| POST | `/occurrences/images` | `multipart/form-data` com campo `image` (máx. 5MB); `201 Created` com `{ "imageId": "<uuid>" }` |
+| POST | `/occurrences` | `{ "problemId": "<uuid>", "materialId": "<uuid>", "affectedQuantity": 2, "reportedByUserId": "<uuid>", "imageId": "<uuid>" }` (`imageId` opcional); `201 Created` |
 | GET | `/occurrences?page&size` | Página de ocorrências |
 
-Ocorrências não alteram estoque. E-mail permanece best effort conforme configuração SMTP.
+Ocorrências não alteram estoque. E-mail permanece best effort conforme configuração SMTP. Quando a ocorrência informa `imageId`, a imagem é lida do arquivo temporário correspondente, anexada ao e-mail dos destinatários e do contato do problema, e o arquivo é excluído após o envio. A imagem nunca é persistida no banco.
 
 ## DTOs principais e validação
 
@@ -55,7 +56,8 @@ Ocorrências não alteram estoque. E-mail permanece best effort conforme configu
 - `Team UpsertRequest`: `name` ou `code` obrigatório; `representatives` e `schedule` texto até 255. `StatusRequest.status`: enum de status 5S.
 - `Problem UpsertRequest`: nome até 20, e-mail relacionado, resposta padrão e `active` opcional.
 - `Material UpsertRequest`: nome até 55, quantidades 0–999 e `active` opcional.
-- `Occurrence CreateRequest`: IDs de problema, material e usuário; `affectedQuantity` positivo.
+- `Occurrence CreateRequest`: IDs de problema, material e usuário; `affectedQuantity` positivo; `imageId` opcional, obtido no upload temporário.
+- `Occurrence image upload`: `multipart/form-data` com campo `image` obrigatório (arquivo não vazio, limite de 5MB). Resposta `ImageUploadResponse { imageId }`.
 - Respostas paginadas incluem `content`, `totalElements`, `totalPages`, `size` e `number`.
 
 ## Respostas e erros
