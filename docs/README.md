@@ -17,11 +17,12 @@ Este diretório contém a fonte canônica de produto, arquitetura, dados, segura
 | Documento | Responsabilidade |
 | --- | --- |
 | `project-overview.md` | Objetivo, público, escopo e limites. |
-| `requirements.md` | Rastreabilidade do PDF, regras e ambiguidades. |
+| `requirements.md` | Rastreabilidade do PDF, regras, matriz de acesso e ambiguidades residuais. |
+| `api-contract.md` | Inventário das rotas implementadas, acesso por papel e convenções HTTP. |
 | `architecture.md` | Monólito MVC, pacotes e dependências. |
 | `domains.md` | Capacidades e relações entre domínios. |
-| `data-model.md` | Entidades, relações e migrações propostas. |
-| `security.md` | Auth, perfis, uploads, secrets e logs. |
+| `data-model.md` | Entidades, relações e migrações aplicadas. |
+| `security.md` | Auth, perfis, senhas, tokens, secrets e logs; imagens/uploads estão fora do escopo atual. |
 | `workflows.md` | Fluxos operacionais principais. |
 | `testing.md` | Unitários, integração e fitness functions. |
 | `coding-standards.md` | Convenções Java/Spring. |

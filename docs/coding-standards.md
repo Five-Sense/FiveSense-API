@@ -39,7 +39,7 @@
 - Autorização é validada no backend, próxima ao endpoint/service.
 - Senhas somente como hash forte; tokens e chaves nunca em logs.
 - Logs estruturados usam IDs, ação e resultado, sem dados sensíveis.
-- Uploads validam tamanho, tipo real e nome gerado pelo servidor.
+- Uploads, caso sejam aprovados em uma futura alteração de escopo, validam tamanho, tipo real e nome gerado pelo servidor. A API atual não recebe arquivos nem imagens.
 
 ## Organização
 

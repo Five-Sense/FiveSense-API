@@ -15,21 +15,21 @@ Hospedagem e infraestrutura ainda não foram escolhidas.
 3. Fazer backup quando houver migração com risco.
 4. Aplicar Flyway no startup/deploy controlado.
 5. Subir a nova versão com secrets do ambiente.
-6. Verificar health, login, permissões e fluxo crítico.
+6. Verificar `/actuator/health`, login, permissões e fluxo crítico.
 7. Monitorar erros e e-mail.
 
 ## Rollback
 
 - Aplicação: retornar à imagem anterior.
 - Banco: preferir migrações compatíveis para frente; rollback destrutivo exige plano específico e backup validado.
-- Imagens: preservar volume/objeto e metadata sincronizados.
+- Imagens: não aplicável no escopo atual da API.
 
 ## Verificação pós-deploy
 
-- Health/readiness respondem.
+- Health/readiness do Actuator respondem sem expor detalhes sensíveis.
 - Flyway está na versão esperada.
 - Conexão PostgreSQL e SMTP funcionam.
 - JWT RS256 valida corretamente.
 - Papéis negam e permitem endpoints conforme matriz.
-- Upload e consulta de imagem funcionam.
+- Fluxo de ocorrência notifica todos os usuários ADMIN e MANAGER por e-mail, sem anexo de imagem.
 - Não há segredo ou stack trace em logs/respostas.

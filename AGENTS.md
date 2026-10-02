@@ -4,7 +4,7 @@
 
 Este arquivo é o contrato universal da **Five Sense API** para pessoas, agentes de IA e automações. Leia-o antes de qualquer implementação relevante e use `docs/*` como fonte canônica detalhada.
 
-O projeto é uma API backend de gerenciamento de 5S para uma única empresa. O MVP cobre autenticação e autorização, usuários, problemas, ocorrências, equipes, agenda de 5S, materiais, estoque, imagens e notificações por e-mail.
+O projeto é exclusivamente uma API backend de gerenciamento de 5S para uma única empresa. O MVP cobre autenticação e autorização, usuários, problemas, ocorrências/alertas, equipes e horários, materiais, estoque e notificações por e-mail. Não há UI, dashboards ou imagens no escopo atual.
 
 ## Regras invioláveis
 
@@ -30,13 +30,14 @@ O projeto é uma API backend de gerenciamento de 5S para uma única empresa. O M
 - PostgreSQL 18.
 - Spring Data JPA.
 - Flyway.
-- Spring Security e JWT assinado com RS256.
+- Spring Security com suporte a JWT assinado com RS256.
 - Bean Validation.
 - MapStruct 1.6.3.
 - Spring Mail; Thymeleaf pode ser usado apenas para templates de e-mail enquanto permanecer como dependência.
+- Spring Boot Actuator, com exposição somente de health/readiness sem detalhes sensíveis.
 - springdoc OpenAPI.
 - Docker para ambiente local, integração e empacotamento.
-- JUnit 5 e Mockito; ferramentas adicionais de integração/arquitetura dependem de aprovação na Fase 1.
+- JUnit 5 e Mockito; Testcontainers PostgreSQL 18 e ArchUnit aprovados para testes.
 
 O `pom.xml` atual é a fonte para versões já presentes. Dependências existentes não são autorização para uso sem necessidade; dependências necessárias e ausentes devem ser propostas antes de inclusão.
 
@@ -70,7 +71,7 @@ Dependências permitidas e proibidas estão em `docs/architecture.md`. Não cria
 7. Atualizar documentação afetada.
 8. Sincronizar issue, plano e log técnico antes de encerrar.
 
-Enquanto a Fase 0 estiver aguardando aprovação, nenhuma implementação nova deve começar.
+O escopo base e as decisões de produto constantes dos documentos canônicos foram aprovados para implementação. Decisões novas que alterem esse escopo continuam exigindo registro e decisão humana.
 
 ## Definition of Done
 
@@ -107,6 +108,7 @@ Leia sob demanda:
 | `docs/data-model.md` | Entidades, relações, constraints e migrações. |
 | `docs/security.md` | Auth, autorização, uploads, secrets ou dados pessoais. |
 | `docs/workflows.md` | Jornadas e efeitos de negócio. |
+| `docs/api-contract.md` | Rotas HTTP, acesso por perfil e convenções de request/response. |
 | `docs/operations.md` e `docs/deploy.md` | Ambiente, Docker, backup e deploy. |
 | `docs/templates.md` | Recipes aprovadas de endpoint, mapper, migração e teste. |
 | `docs/decision-log.md` | Decisões duradouras e propostas abertas. |
@@ -126,4 +128,4 @@ Em conflito com o documento de requisitos original, registre a divergência e pe
 
 O humano define produto, prioridade, escopo e decisões relevantes. A IA propõe o caminho técnico, implementa incrementos aprovados, valida e mantém o histórico.
 
-Pausar e pedir decisão antes de: mudar os papéis ou permissões, adotar política de token, definir persistência de imagens, vincular ocorrência a movimentação de estoque, escolher exclusão lógica/física, alterar módulos, adicionar dependências ou remover documentos.
+Pausar e pedir decisão antes de: mudar os papéis ou permissões já aprovados, alterar política de token, reabrir persistência de imagens, vincular ocorrência a movimentação de estoque, mudar política de exclusão, alterar módulos, adicionar dependências ou remover documentos.

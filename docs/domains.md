@@ -8,11 +8,11 @@ Login, JWT RS256, logout, alteração e recuperação de senha. Depende de Users
 
 ## Users
 
-Usuários, estado ativo, papéis e administração de conta. É a fonte de identidade para Auth e para representantes de equipe, conforme decisão pendente.
+Usuários, estado ativo, papéis e administração de conta. Admin cria contas MANAGER e VIEWER; Manager cria e gerencia VIEWER. Viewer não é associado a uma equipe.
 
 ## Teams
 
-Equipes, representantes, horários, calendário e status de execução do 5S. Pode referenciar IDs de Users.
+Equipes, representantes textuais (`varchar(255)`), horários organizados por equipe e status 5S. Não é calendário de eventos nem possui entidades de representante; Viewer envia o ID alvo ao alterar status.
 
 ## Problems
 
@@ -20,11 +20,11 @@ Catálogo de problemas, e-mail relacionado e resposta padrão. É referenciado p
 
 ## Materials
 
-Materiais, imagem, quantidade, limites de estoque e alertas. É referenciado por Occurrences.
+Materiais, quantidade, limites de estoque e alertas. Imagens fora do escopo atual. É referenciado por Occurrences.
 
 ## Occurrences
 
-Registro de problema, material, quantidade afetada, imagem opcional, autor e notificação. O efeito sobre estoque ainda não foi definido.
+Registro de problema, material, quantidade afetada, autor e notificação. Imagens fora do escopo; quantidade afetada não altera estoque por decisão humana.
 
 ## Matriz de dependência
 
@@ -32,10 +32,10 @@ Registro de problema, material, quantidade afetada, imagem opcional, autor e not
 | --- | --- |
 | Auth | Users, infraestrutura compartilhada de segurança/e-mail |
 | Users | Shared |
-| Teams | Users, Shared |
+| Teams | Shared |
 | Problems | Shared |
 | Materials | Shared |
-| Occurrences | Users, Problems, Materials, infraestrutura de e-mail/imagem |
+| Occurrences | Users, Problems, Materials, infraestrutura de e-mail |
 
 Dependências inversas não devem surgir por acesso direto a repository. Comunicação entre domínios ocorre por service público ou identificadores.
 

@@ -10,7 +10,7 @@
 
 ## Rotas por tipo de mudança
 
-- Auth/permissão/upload: `requirements.md` + `security.md`.
+- Auth/permissão/dados pessoais: `requirements.md` + `security.md`. Upload não existe no escopo atual; reabertura exige decisão de escopo.
 - Entidade/schema: `data-model.md` + `decision-log.md`.
 - Nova capacidade ou dependência: `architecture.md` + `domains.md`.
 - Feature: `workflows.md` + issue + testing.

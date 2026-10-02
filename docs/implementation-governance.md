@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-A Fase 0 está em revisão. Documentação pode ser ajustada, mas código novo está bloqueado até aprovação humana.
+A Fase 0 está concluída com escopo e decisões funcionais aprovados. A implementação do MVP está em revisão de qualidade; evolução dentro do escopo aprovado pode seguir. Mudanças de produto, arquitetura ou segurança que alterem decisões aceitas exigem nova decisão humana.
 
 ## Regras
 
@@ -34,6 +34,8 @@ Uma fase só conclui quando:
 - checks foram executados ou a impossibilidade foi aceita;
 - issues estão atualizadas;
 - entrega foi registrada.
+
+O check de integração PostgreSQL não é considerado executado quando Testcontainers é ignorado por indisponibilidade do Docker; registrar como bloqueio ambiental e repetir antes do aceite técnico final.
 
 ## Remoções pendentes
 
