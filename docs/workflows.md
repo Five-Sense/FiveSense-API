@@ -2,49 +2,38 @@
 
 ## Login
 
-1. Cliente envia e-mail e senha.
-2. API valida usuário ativo e hash.
-3. API emite JWT RS256 conforme política aprovada.
-4. Cliente usa Bearer token; API valida assinatura, validade e permissão.
+1. Cliente envia o e-mail cadastrado e a senha para `POST /api/v1/auth/login`.
+2. API compara o e-mail normalizado e a senha diretamente com os dados armazenados.
+3. Login válido retorna `authenticated`, `userId`, nome, e-mail e papel. As chamadas da API são abertas.
 
-## Recuperação de senha
+## Cadastro inicial
 
-1. Cliente informa e-mail.
-2. API responde de forma neutra.
-3. Se existir usuário elegível, cria token de uso único com 10 minutos e envia link.
-4. Cliente envia token, nova senha e confirmação.
-5. API valida token e política, altera hash e invalida o token.
-
-## Cadastro de usuário
-
-1. Admin envia nome, e-mail e papel.
-2. API valida unicidade e papel.
-3. API cria estado de primeiro acesso.
-4. API envia credencial inicial conforme decisão de segurança.
+1. O primeiro usuário e os demais são criados por `POST /api/v1/users` com `name`, `email`, `password` e `role`.
+2. Contas iniciam em `ACTIVE`; o campo de papel é informativo.
 
 ## Ocorrência
 
-1. Viewer seleciona problema/material, informa quantidade e opcionalmente imagem.
-2. API valida permissão, vínculos, quantidade e upload.
+1. Cliente seleciona problema/material e informa quantidade e `reportedByUserId`.
+2. API valida referências e quantidade; não recebe imagem.
 3. API persiste a ocorrência.
-4. API aplica ou não efeito no estoque conforme decisão pendente.
-5. API envia notificação ao destinatário aprovado.
-6. Falha de e-mail não pode produzir duplicação em retry; política transacional precisa ser definida.
+4. Quantidade afetada não altera estoque por decisão humana.
+5. API notifica por e-mail todos os usuários ADMIN e MANAGER; sem anexo, pois imagens estão fora do escopo. RN012 também prevê resposta padrão ao e-mail relacionado ao problema.
+6. Resposta padrão é enviada em toda ocorrência ao e-mail relacionado ao problema. Envio pós-commit é best effort, sem outbox durável ou retry automático.
 
 ## Equipe e 5S
 
-1. Manager cria equipe com nome/código, representantes e horário.
-2. Viewer consulta sua equipe e calendário.
-3. Somente representante autorizado alterna o status da própria equipe.
+1. Manager cria equipe com nome ou código, representantes e horário.
+2. Viewer consulta equipes, status, representantes, horários organizados e estoque; não consulta usuários, dashboards ou catálogo de problemas fora da seleção necessária para ocorrência.
+3. Viewer envia o `teamId` e altera o status 5S daquela equipe. Não possui relação persistida com equipe; permissão limitada à operação de status.
 4. Manager consulta equipes e seus status.
 
 ## Material e estoque
 
-1. Manager cria material com nome, quantidade, mínimo e imagem.
+1. Manager cria material com nome, quantidade inicial e mínimo; API não aceita imagem (decisão de escopo).
 2. API valida intervalo 0..999.
-3. Consultas indicam alerta conforme critério aprovado.
-4. Atualização/exclusão preserva histórico conforme política pendente.
+3. Consultas indicam alerta quando quantidade é igual ou inferior ao mínimo. E-mail ocorre quando criado já baixo ou ao cruzar o mínimo; não se repete em atualizações que permanecem abaixo. Viewer pode disparar alertas criando ocorrência.
+4. Atualização preserva histórico; exclusão responde 409 se material estiver referenciado por ocorrência.
 
 ## CRUDs
 
-Problemas, equipes e materiais seguem: request validado -> autorização -> service transacional -> repository -> MapStruct -> response HTTP. Exclusões referenciadas não serão implementadas até a política ser aprovada.
+Problemas, equipes e materiais seguem: request validado -> service transacional -> repository -> MapStruct -> response HTTP. Exclusões de problema/material referenciados respondem 409; equipes não possuem referência de ocorrência e podem ser excluídas.

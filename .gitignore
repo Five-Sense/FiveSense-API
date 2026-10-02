@@ -1,5 +1,9 @@
 HELP.md
+.env
+.env.*
+!.env.example
 target/
+.local-maven-repo/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

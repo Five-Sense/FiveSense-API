@@ -1,58 +1,36 @@
-# Modelo de dados proposto
+# Modelo de dados atual
 
-Este modelo é uma proposta para revisão. Campos marcados como pendentes não devem virar migração antes de decisão humana.
+Este é o modelo aprovado e implementado pela migração Flyway atual. Mudanças futuras exigem nova migração.
 
 ## User
 
 - `id: UUID`
-- `name: varchar`, obrigatório
+- `name: varchar(255)`, obrigatório
 - `email: varchar(255)`, obrigatório e único, normalizado
-- `passwordHash: varchar`, obrigatório
+- `password: varchar(255)`, obrigatório; valor salvo em texto puro por decisão expressa para avaliação mobile.
 - `role: ADMIN | MANAGER | VIEWER`
-- `status: ACTIVE | INACTIVE | FIRST_ACCESS`
+- `status: ACTIVE | INACTIVE`; usuários cadastrados pela API iniciam em `ACTIVE`.
+- `VIEWER` não tem vínculo com Team; o totem envia o ID da equipe-alvo ao alterar o status 5S
 - `createdAt`, `updatedAt`
-
-## PasswordResetToken
-
-- `id: UUID`
-- `userId: UUID`
-- `tokenHash: varchar`, único
-- `expiresAt`
-- `usedAt`, opcional
-- `createdAt`
-
-O token bruto não deve ser persistido. Expiração: 10 minutos.
 
 ## Team
 
 - `id: UUID`
-- `name: varchar`, opcional se `code` existir
-- `code: varchar`, opcional se `name` existir
-- `status: DOING_5S | NOT_DOING_5S` (proposta)
+- `name: varchar(255)`, opcional se `code` existir
+- `code: varchar(255)`, opcional se `name` existir
+- `representatives: varchar(255)`, nomes para exibição no totem, mantidos pelo Gestor; não é relação com User nem entidade própria
+- `schedule: varchar(255)`, horário exibido/organizado para a equipe como texto simples, sem eventos de calendário.
+- `status: DOING_5S | NOT_DOING_5S`; padrão `NOT_DOING_5S`.
 - `createdAt`, `updatedAt`
 
-Constraint: pelo menos `name` ou `code`.
-
-## TeamRepresentative
-
-- `teamId: UUID`
-- `userId: UUID`
-- `createdAt`
-
-Depende da confirmação de que representantes são usuários e do limite por equipe.
-
-## FiveSSchedule
-
-- `id: UUID`
-- `teamId: UUID`
-- dia/turno, hora inicial/final e timezone: contrato pendente
+Constraint: pelo menos `name` ou `code`; `name` e `code` são únicos sem diferenciar maiúsculas/minúsculas quando informados.
 
 ## Problem
 
 - `id: UUID`
 - `name: varchar(20)`, obrigatório
 - `relatedEmail: varchar(255)`, obrigatório
-- `defaultResponse: text`, obrigatório
+- `defaultResponse: varchar(255)`, obrigatório (limite padrão)
 - `active: boolean`
 - `createdAt`, `updatedAt`
 
@@ -62,7 +40,6 @@ Depende da confirmação de que representantes são usuários e do limite por eq
 - `name: varchar(55)`, obrigatório
 - `stockQuantity: integer`, entre 0 e 999
 - `minimumStock: integer`, entre 0 e 999 e não maior que o estoque máximo adotado
-- `imageKey`, `imageContentType`, `imageSize`: contrato pendente
 - `active: boolean`
 - `createdAt`, `updatedAt`
 
@@ -73,23 +50,21 @@ Depende da confirmação de que representantes são usuários e do limite por eq
 - `materialId: UUID`
 - `reportedByUserId: UUID`
 - `affectedQuantity: integer`, maior que zero
-- metadata da imagem opcional
 - `createdAt`
 
-O efeito sobre `Material.stockQuantity` e o status/ciclo de vida da ocorrência estão pendentes.
+Imagens de ocorrência/material não fazem parte do escopo atual da API, apesar de RF016/RN013/RN017. A quantidade afetada não altera `Material.stockQuantity`. Ocorrências são registros append-only sem ciclo de status. Usuários ativos `ADMIN` e `MANAGER` recebem notificação; o endereço associado ao problema também recebe sua resposta padrão.
 
 ## Relações
 
-- User N:N Team por TeamRepresentative.
-- Team 1:N FiveSSchedule.
+- `VIEWER` não possui relação de associação com Team. O endpoint recebe o ID da equipe a alterar.
 - Problem 1:N Occurrence.
 - Material 1:N Occurrence.
 - User 1:N Occurrence como autor.
-- User 1:N PasswordResetToken.
+- O login não cria registros adicionais no banco.
 
 ## Migrações
 
-- Flyway em `src/main/resources/db/migration`.
+- Flyway em `src/main/resources/db/migration`; `V1` define o schema atual.
 - Uma migração aplicada nunca é editada; correções usam nova versão.
 - Constraints e índices relevantes pertencem ao banco, não apenas ao Java.
 - Seeds de desenvolvimento devem ser separados de migrações de produção.

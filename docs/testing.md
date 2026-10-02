@@ -9,7 +9,7 @@ Provar comportamento, integração real com PostgreSQL 18 e preservação da arq
 ### Testes unitários
 
 - JUnit 5 e Mockito.
-- Todo método público de cada service deve ter casos de sucesso, validação, autorização/regra e falha relevante.
+- Todo método público de cada service deve ter casos de sucesso, validação/regra e falha relevante.
 - Não subir Spring quando um teste puro resolve.
 - Mappers MapStruct com conversões não triviais devem ser testados.
 
@@ -19,14 +19,14 @@ Provar comportamento, integração real com PostgreSQL 18 e preservação da arq
 - Usar `@SpringBootTest`/MockMvc ou suporte MVC equivalente e PostgreSQL real em container.
 - Não substituir PostgreSQL por H2.
 - Executar migrações Flyway no banco do teste.
-- Simular apenas fronteiras externas, como SMTP e armazenamento, mantendo seus contratos verificáveis.
+- Simular apenas fronteiras externas, como SMTP, mantendo seus contratos verificáveis. Armazenamento de imagens não existe no escopo atual.
 - Nome recomendado: `*IT`; dados independentes e limpeza previsível.
 
 ### Testes de arquitetura e fitness functions
 
-- A ferramenta proposta para regras estruturais é ArchUnit.
-- A ferramenta de métricas de código ainda deve ser aprovada na Fase 1.
-- Executar no `verify` após toda implementação.
+- ArchUnit verifica regras estruturais no `test` do Maven.
+- Métricas (complexidade, CBO e LCOM4) são revisadas manualmente; não há plugin de métricas no build nesta entrega.
+- Executar no `verify` após toda implementação; CI executa o comando em runner Linux com Docker.
 
 Limites iniciais propostos:
 
@@ -43,9 +43,9 @@ Fitness functions obrigatórias:
 - nenhum ciclo entre pacotes;
 - `domain` não depende de `controller`, `dto`, `app` ou `infra`;
 - controller não acessa repository;
-- nomes `*Controller`, `*Service`, `*Repository` e `*Mapper` ficam nas pastas corretas;
+- nomes `*Controller`, `*Repository` e `*Mapper` ficam nas pastas corretas; controllers não dependem de infra;
 - repositories são acessados pela camada de aplicação;
-- métricas geram relatório arquivado pelo build/CI.
+- métricas são registradas/revisadas por issue; automatização delas é melhoria futura, não gate ativo.
 
 ## Comandos
 
@@ -56,7 +56,7 @@ No Windows:
 .\mvnw.cmd verify
 ```
 
-O comando oficial final será `.\mvnw.cmd clean verify` quando Testcontainers, ArchUnit e a ferramenta de métricas forem aprovados/configurados.
+Comando oficial local: `.\mvnw.cmd clean verify`. CI executa o equivalente `bash ./mvnw --batch-mode --no-transfer-progress clean verify`.
 
 ## Definition of Done de qualidade
 

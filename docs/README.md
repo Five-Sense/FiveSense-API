@@ -1,6 +1,6 @@
 # Documentação da Five Sense API
 
-Este diretório contém a fonte canônica de produto, arquitetura, dados, segurança, qualidade, operação e governança da Five Sense API.
+Este diretório contém a referência funcional, técnica e operacional da Five Sense API.
 
 ## Ordem de leitura
 
@@ -17,11 +17,13 @@ Este diretório contém a fonte canônica de produto, arquitetura, dados, segura
 | Documento | Responsabilidade |
 | --- | --- |
 | `project-overview.md` | Objetivo, público, escopo e limites. |
-| `requirements.md` | Rastreabilidade do PDF, regras e ambiguidades. |
+| `requirements.md` | Rastreabilidade do PDF, regras, matriz de acesso e ambiguidades residuais. |
+| `api-contract.md` | Inventário das rotas públicas e contratos HTTP atuais. |
+| `site/index.html` | Site estático navegável da referência de endpoints da API. |
 | `architecture.md` | Monólito MVC, pacotes e dependências. |
 | `domains.md` | Capacidades e relações entre domínios. |
-| `data-model.md` | Entidades, relações e migrações propostas. |
-| `security.md` | Auth, perfis, uploads, secrets e logs. |
+| `data-model.md` | Entidades, relações e migrações aplicadas. |
+| `login.md` | Login e cadastro para avaliação mobile. |
 | `workflows.md` | Fluxos operacionais principais. |
 | `testing.md` | Unitários, integração e fitness functions. |
 | `coding-standards.md` | Convenções Java/Spring. |

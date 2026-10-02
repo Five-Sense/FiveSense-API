@@ -22,7 +22,7 @@ Antes de implementar, registrar:
 - objetivo e critérios de aceite;
 - requisitos RF/NF/RN envolvidos;
 - documentos lidos;
-- impacto em dados, segurança, e-mail, imagens e estoque;
+- impacto em dados, segurança, e-mail e estoque; imagens não fazem parte do escopo atual da API;
 - testes unitários, integração e fitness functions necessários;
 - migrações e dependências previstas;
 - riscos, suposições e decisão humana pendente.
@@ -44,8 +44,8 @@ A IA deve pedir decisão antes de:
 
 - mudar escopo, papel ou permissão;
 - escolher entre requisitos contraditórios;
-- definir política de token, senha inicial, logout ou exclusão;
-- definir armazenamento de imagens ou efeito no estoque;
+- reintroduzir tokens/autorização ou mudar a modalidade de senha da avaliação;
+- reabrir o escopo de imagens ou alterar a decisão de que quantidade afetada não movimenta estoque;
 - criar/remover módulo ou documento;
 - adicionar ou remover dependência;
 - pular ou reordenar fases;

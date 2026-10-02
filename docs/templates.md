@@ -41,7 +41,7 @@ Recipes são padrões repetíveis, não abstrações obrigatórias.
 - PostgreSQL 18 em container + Flyway.
 - Request HTTP real via camada MVC.
 - Assert de status, contrato e estado persistido.
-- SMTP/storage substituídos por doubles verificáveis.
+- SMTP substituído por double verificável. Não há armazenamento de arquivos no escopo atual.
 - Dados únicos e isolamento por teste.
 
 ## Fora do escopo
