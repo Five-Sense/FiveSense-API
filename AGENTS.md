@@ -118,7 +118,7 @@ Leia sob demanda:
 ## Hierarquia de contexto
 
 1. `AGENTS.md`.
-2. Documentação canônica em `docs/*` e decisões aceitas em `docs/decision-log.md`.
+2. Documentação canônica em `docs/*` e decisões aceitas em `docs/decision-log.md`, não leia `docs/site`.
 3. Código e testes, para o comportamento já implementado.
 4. Adaptadores de ferramenta, como `CLAUDE.md`.
 

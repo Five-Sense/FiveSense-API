@@ -5,7 +5,7 @@ Este é um adaptador para Claude Code. A fonte canônica é `AGENTS.md`, seguida
 Antes de implementar:
 
 1. leia `AGENTS.md`;
-2. leia `docs/README.md` e os documentos nucleares;
+2. leia `docs/README.md` e os documentos nucleares, não leia `docs/site`;
 3. confirme que a Fase 0 foi aprovada e a issue está em andamento;
 4. não resolva ambiguidades de `docs/requirements.md` por inferência.
 
