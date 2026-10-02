@@ -9,5 +9,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService service;
     public AuthController(AuthService service){this.service=service;}
-    @PostMapping("/login") public AuthDtos.LoginResponse login(@Valid @RequestBody AuthDtos.LoginRequest request){return service.login(request);}
+    @PostMapping("/login")
+    public AuthDtos.LoginResponse login(@Valid @RequestBody AuthDtos.LoginRequest request){
+        return service.login(request);
+    }
 }
