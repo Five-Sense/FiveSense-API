@@ -16,5 +16,6 @@ public class Material {
     protected Material() {}
     public Material(String name,int stockQuantity,int minimumStock,Instant now){this.name=name;this.stockQuantity=stockQuantity;this.minimumStock=minimumStock;this.createdAt=now;this.updatedAt=now;}
     public void update(String name,int stockQuantity,int minimumStock,boolean active,Instant now){this.name=name;this.stockQuantity=stockQuantity;this.minimumStock=minimumStock;this.active=active;this.updatedAt=now;}
+    public void adjustStock(int delta,Instant now){this.stockQuantity+=delta;this.updatedAt=now;}
     public UUID getId(){return id;} public String getName(){return name;} public int getStockQuantity(){return stockQuantity;} public int getMinimumStock(){return minimumStock;} public boolean isActive(){return active;}
 }

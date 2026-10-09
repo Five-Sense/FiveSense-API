@@ -13,4 +13,9 @@ public class AuthController {
     public AuthDtos.LoginResponse login(@Valid @RequestBody AuthDtos.LoginRequest request){
         return service.login(request);
     }
+
+    @PostMapping("/forgot-password")
+    public AuthDtos.ForgotPasswordResponse forgotPassword(@Valid @RequestBody AuthDtos.ForgotPasswordRequest request){
+        return service.forgotPassword(request);
+    }
 }

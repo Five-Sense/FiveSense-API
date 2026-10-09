@@ -2,12 +2,14 @@
 
 ## Modo atual
 
-Este contrato descreve a API usada na avaliação mobile. Login compara e-mail e senha diretamente. Consulte `login.md` para o fluxo de cadastro e login.
+Este contrato descreve a API usada na avaliação mobile. Login compara `username` e senha diretamente. O acesso é controlado por perfil (`role`) enviado pelo cliente. Consulte `login.md` para o fluxo de cadastro e login.
 
 ## Convenções
 
 - Prefixo `/api/v1`; JSON UTF-8; identificadores UUID.
-- Todas as operações são públicas. Os campos `role` e `status` são dados de usuário e não controlam acesso.
+- Exceto `/auth/**`, toda chamada deve enviar o header `X-User-Role` (`ADMIN`, `MANAGER` ou `VIEWER`), valor recebido no login. Header ausente ou inválido retorna `401`.
+- `POST`, `PUT` e `DELETE` em `/users`, `/problems`, `/materials` e `/teams` exigem `ADMIN` ou `MANAGER`; `VIEWER` recebe `403`. Todo o resto (consultas, ocorrências, `PATCH /teams/{id}/status`, `PATCH /materials/{id}/stock`) aceita os três perfis.
+- Controle didático: o header não é autenticado e pode ser forjado. Não use em produção.
 - Listagens aceitam `page` (padrão 0) e `size` (padrão 20, máximo 100).
 - Erros de negócio usam `ProblemDetail`; validação retorna `400` com propriedade `errors`.
 - Site navegável: [`site/index.html`](site/index.html).
@@ -17,13 +19,13 @@ Este contrato descreve a API usada na avaliação mobile. Login compara e-mail e
 
 | Método | Rota | Contrato | Resultado |
 | --- | --- | --- | --- |
-| POST | `/auth/login` | `{ "email": "ana@empresa.com", "password": "senha" }` | `{ "authenticated": true, "userId": "<uuid>", "name": "Ana", "email": "ana@empresa.com", "role": "VIEWER" }` |
-| GET | `/users?page=0&size=20` | Query `page`, `size` | Página de usuários, todas as rotas públicas |
+| POST | `/auth/login` | `{ "username": "admin", "password": "admin123" }` | `{ "authenticated": true, "userId": "<uuid>", "name": "admin", "username": "admin", "email": "admin@gmail.com", "role": "ADMIN" }` |
+| GET | `/users?page=0&size=20` | Query `page`, `size` | Página de usuários (qualquer perfil) |
 | GET | `/users/{id}` | Path `id` UUID | Usuário |
-| POST | `/users` | `{ "name": "Ana", "email": "ana@empresa.com", "password": "senha", "role": "VIEWER" }` | `201 Created`, usuário ativo |
-| PUT | `/users/{id}` | `{ "name": "Ana", "email": "ana@empresa.com", "status": "ACTIVE" }` | Usuário atualizado |
+| POST | `/users` | `{ "name": "Ana", "username": "ana", "email": "ana@empresa.com", "password": "senha", "role": "VIEWER" }` | `201 Created`, usuário ativo (ADMIN/MANAGER) |
+| PUT | `/users/{id}` | `{ "name": "Ana", "username": "ana", "email": "ana@empresa.com", "status": "ACTIVE" }` | Usuário atualizado (ADMIN/MANAGER) |
 
-O cadastro público do primeiro usuário é também o onboarding inicial. A resposta do usuário não inclui senha.
+O admin padrão (`admin` / `admin@gmail.com` / `admin123`) é criado pela migration V2 e é o onboarding inicial. `username` é normalizado em minúsculas e é único. O e-mail só tem o formato validado; não há confirmação por e-mail. A resposta do usuário não inclui senha.
 
 ## Operação 5S
 
@@ -43,7 +45,8 @@ O cadastro público do primeiro usuário é também o onboarding inicial. A resp
 | GET | `/materials/{id}` | Detalhe e indicador `lowStock` |
 | GET | `/materials/stock` | Visão geral do estoque |
 | GET | `/materials/options` | Opções `id`/`name` para ocorrência |
-| POST/PUT/DELETE | `/materials[/{id}]` | CRUD; create `201`, delete `204` |
+| POST/PUT/DELETE | `/materials[/{id}]` | CRUD; create `201`, delete `204` (ADMIN/MANAGER) |
+| PATCH | `/materials/{id}/stock` | `{ "delta": -3 }` (inteiro não zero; negativo retira, positivo repõe). Resultado deve ficar entre 0 e 999, senão `400`. Dispara alerta de estoque baixo ao cruzar o mínimo. Qualquer perfil. |
 | POST | `/occurrences/images` | `multipart/form-data` com campo `image` (máx. 5MB); `201 Created` com `{ "imageId": "<uuid>" }` |
 | POST | `/occurrences` | `{ "problemId": "<uuid>", "materialId": "<uuid>", "affectedQuantity": 2, "reportedByUserId": "<uuid>", "imageId": "<uuid>" }` (`imageId` opcional); `201 Created` |
 | GET | `/occurrences?page&size` | Página de ocorrências |
@@ -52,7 +55,7 @@ Ocorrências não alteram estoque. E-mail permanece best effort conforme configu
 
 ## DTOs principais e validação
 
-- `User CreateRequest`: `name`, `email`, `password` (até 255), `role` (`ADMIN`, `MANAGER` ou `VIEWER`). `UpdateRequest`: `name`, `email`, `status`.
+- `User CreateRequest`: `name`, `username`, `email`, `password` (até 255), `role` (`ADMIN`, `MANAGER` ou `VIEWER`). `UpdateRequest`: `name`, `username`, `email`, `status`. `LoginRequest`: `username`, `password`.
 - `Team UpsertRequest`: `name` ou `code` obrigatório; `representatives` e `schedule` texto até 255. `StatusRequest.status`: enum de status 5S.
 - `Problem UpsertRequest`: nome até 20, e-mail relacionado, resposta padrão e `active` opcional.
 - `Material UpsertRequest`: nome até 55, quantidades 0–999 e `active` opcional.
@@ -63,5 +66,5 @@ Ocorrências não alteram estoque. E-mail permanece best effort conforme configu
 ## Respostas e erros
 
 - Criações retornam `201`; exclusões retornam `204`.
-- Credencial incorreta retorna `400` com `ProblemDetail`.
+- Credencial incorreta retorna `400` com `ProblemDetail`; `X-User-Role` ausente/inválido, `401`; perfil sem permissão, `403`.
 - Validação retorna `400`; recurso ausente, `404`; conflito, `409`.

@@ -17,5 +17,6 @@ public class MaterialController {
     @GetMapping("/{id}") public MaterialDtos.Response get(@PathVariable UUID id){return service.get(id);}
     @PostMapping @ResponseStatus(HttpStatus.CREATED) public MaterialDtos.Response create(@Valid @RequestBody MaterialDtos.UpsertRequest request){return service.create(request);}
     @PutMapping("/{id}") public MaterialDtos.Response update(@PathVariable UUID id,@Valid @RequestBody MaterialDtos.UpsertRequest request){return service.update(id,request);}
+    @PatchMapping("/{id}/stock") public MaterialDtos.Response adjustStock(@PathVariable UUID id,@Valid @RequestBody MaterialDtos.StockAdjustRequest request){return service.adjustStock(id,request.delta());}
     @DeleteMapping("/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void delete(@PathVariable UUID id){service.delete(id);}
 }

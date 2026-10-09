@@ -8,6 +8,7 @@ Este é o modelo aprovado e implementado pela migração Flyway atual. Mudanças
 - `name: varchar(255)`, obrigatório
 - `email: varchar(255)`, obrigatório e único, normalizado
 - `password: varchar(255)`, obrigatório; valor salvo em texto puro por decisão expressa para avaliação mobile.
+- `username` (único, minúsculas, usado no login)
 - `role: ADMIN | MANAGER | VIEWER`
 - `status: ACTIVE | INACTIVE`; usuários cadastrados pela API iniciam em `ACTIVE`.
 - `VIEWER` não tem vínculo com Team; o totem envia o ID da equipe-alvo ao alterar o status 5S

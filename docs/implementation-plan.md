@@ -15,6 +15,7 @@ API de avaliação mobile implementada como monólito Spring MVC com PostgreSQL 
 - Configuração do Supabase em `.env.example` e carregamento local por `.env`.
 - Referência pesquisável dos endpoints em `docs/site/index.html`.
 
+- [x] Login por `username`, admin padrão `admin`/`admin@gmail.com`/`admin123` (V2), perfis por header `X-User-Role` e ajuste de estoque `PATCH /materials/{id}/stock` (decisão 0005).
 ## Pendências externas
 
 - [ ] Informar `DATABASE_PASSWORD` no `.env` local e testar a conexão Supabase.

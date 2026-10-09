@@ -9,7 +9,10 @@
 - Schema Flyway inicial alinhado ao modelo atual da API.
 - [2026-10-02] Imagem temporária no fluxo de ocorrência: upload em `POST /occurrences/images`, anexo no e-mail e exclusão após o envio; sem persistência no banco (decisão 0004).
 
+- [2026-10-09] Login por `username`, admin padrão (migration V2), perfis ADMIN/MANAGER/VIEWER via header `X-User-Role` e `PATCH /materials/{id}/stock` (decisão 0005).
 ## Pendente
+- [ ] Confirmar com o humano se VIEWER pode criar/editar equipes (hoje só altera o status).
+- [ ] Teste de integração PostgreSQL/Testcontainers para a migration V2 e os fluxos de perfil (Docker indisponível na verificação).
 
 - [ ] Preencher a senha do PostgreSQL Supabase no `.env` local e validar a conexão.
 - [ ] Executar build usando Java 21.

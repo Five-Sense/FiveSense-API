@@ -8,7 +8,7 @@ Five Sense é uma API REST para apoiar a avaliação mobile das atividades 5S de
 
 - Criar usuário com nome, e-mail, senha e papel informativo.
 - Entrar com e-mail e senha cadastrados; a API faz comparação direta e devolve os dados básicos do usuário.
-- Todas as rotas ficam abertas para o cliente mobile da avaliação.
+- Login por `username` e senha. Perfis `ADMIN`, `MANAGER` e `VIEWER` são aplicados pelo header `X-User-Role` (ver `login.md`); o admin padrão vem da migration V2.
 
 ## Dados e operações
 

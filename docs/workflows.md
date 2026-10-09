@@ -2,13 +2,13 @@
 
 ## Login
 
-1. Cliente envia o e-mail cadastrado e a senha para `POST /api/v1/auth/login`.
+1. Cliente envia o `username` cadastrado e a senha para `POST /api/v1/auth/login`.
 2. API compara o e-mail normalizado e a senha diretamente com os dados armazenados.
-3. Login válido retorna `authenticated`, `userId`, nome, e-mail e papel. As chamadas da API são abertas.
+3. Login válido retorna `authenticated`, `userId`, nome, username, e-mail e papel. O cliente passa a enviar o papel em `X-User-Role` nas demais chamadas.
 
 ## Cadastro inicial
 
-1. O primeiro usuário e os demais são criados por `POST /api/v1/users` com `name`, `email`, `password` e `role`.
+1. O admin padrão já existe (migration V2). Admin e gestores criam os demais usuários por `POST /api/v1/users` com `name`, `username`, `email`, `password` e `role`.
 2. Contas iniciam em `ACTIVE`; o campo de papel é informativo.
 
 ## Ocorrência

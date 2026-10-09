@@ -20,3 +20,11 @@
 - Verificação de e-mail solicitada: ocorrência e alerta de estoque enviam corretamente; fluxo "esqueci minha senha" não existe no escopo e não foi criado (depende de decisão humana sobre o login).
 - Checks: `.\mvnw.cmd -Dtest="OccurrenceServiceTests,EmailServiceTests,TemporaryImageStoreTests,ArchitectureFitnessTests" test` com `JAVA_HOME` apontando para JDK 25 — BUILD SUCCESS, 15 testes, 0 falhas (inclui fitness functions ArchUnit). Testes de integração com Testcontainers não executados (exigem Docker).
 - Risco residual: envio de e-mail e exclusão do arquivo temporário ocorrem pós-commit sem retry; se a imagem temporária for removida antes do envio, o e-mail segue sem anexo.
+## [2026-10-09] — Login por username, perfis e ajuste de estoque
+- Migration `V2__username_and_default_admin.sql`: coluna `app_user.username` única (usuários existentes recebem `<parte-local-do-email>-<8 chars do id>`) e inserção do admin padrão (`admin` / `admin@gmail.com` / `admin123`, texto puro) com `ON CONFLICT DO NOTHING`.
+- `AppUser`, `UserDtos`, `UserService` e `UserRepository` ganharam `username` (normalizado em minúsculas, conflito retorna 409). Login passou a usar `username` e devolve `username` e `role`.
+- Novo `RoleAccessInterceptor` (`auth/controller`) lê `X-User-Role`: 401 se ausente/inválido; 403 para VIEWER em POST/PUT/DELETE de `users`, `problems`, `materials` e `teams`. `/auth/**` fica fora.
+- Novo `PATCH /api/v1/materials/{id}/stock` (`{ "delta": n }`) com limites 0–999 e alerta de estoque baixo.
+- Docs atualizadas: `login.md`, `api-contract.md`, `workflows.md`, `data-model.md`, `requirements.md`, `decision-log.md` (0005) e `site/index.html`.
+- Checks: `.\mvnw.cmd test` com JDK 25 — sucesso, inclui ArchUnit e novos testes (`AuthServiceTests`, `UserServiceTests`, `RoleAccessInterceptorTests`, `MaterialServiceTests`). Testes de integração com Testcontainers e a execução real da V2 no PostgreSQL não foram executados (Docker indisponível). Métricas de complexidade de `docs/testing.md` não executadas.
+- Risco residual: o header de perfil é forjável e `forgot-password` continua público; o `.env`/banco existente precisa aplicar a V2 ao subir a aplicação.

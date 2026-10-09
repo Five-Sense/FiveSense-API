@@ -8,6 +8,8 @@ import java.util.*;
 public interface UserRepository extends JpaRepository<AppUser, UUID> {
     Optional<AppUser> findByEmailIgnoreCase(String email);
     boolean existsByEmailIgnoreCase(String email);
+    Optional<AppUser> findByUsernameIgnoreCase(String username);
+    boolean existsByUsernameIgnoreCase(String username);
     Page<AppUser> findByRoleIn(Collection<UserRole> roles, Pageable pageable);
     List<AppUser> findByRoleInAndStatus(Collection<UserRole> roles, UserStatus status);
     List<AppUser> findByRoleIn(Collection<UserRole> roles);
