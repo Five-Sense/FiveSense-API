@@ -1,6 +1,6 @@
 # Five Sense API
 
-API backend de avaliação mobile Five Sense para gerenciamento de atividades 5S. O login compara e-mail e senha cadastrados e as rotas ficam abertas.
+API backend de avaliação mobile Five Sense para gerenciamento de atividades 5S.
 
 Este projeto segue o framework SpecFirst: o escopo, os contratos e as decisões são documentados e aprovados antes da implementação.
 
