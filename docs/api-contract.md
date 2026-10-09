@@ -12,7 +12,7 @@ Este contrato descreve a API usada na avaliação mobile. Login compara `usernam
 - Controle didático: o header não é autenticado e pode ser forjado. Não use em produção.
 - Listagens aceitam `page` (padrão 0) e `size` (padrão 20, máximo 100).
 - Erros de negócio usam `ProblemDetail`; validação retorna `400` com propriedade `errors`.
-- Site navegável: [`site/index.html`](site/index.html).
+- Site navegável: [`site/index.html`](site/index.html). Com a API no ar, é servido em `/docs` (também `/api/docs`, que redireciona), empacotado a partir do mesmo arquivo pelo build.
 - OpenAPI: `/v3/api-docs`; Swagger UI: `/swagger-ui/index.html`.
 
 ## Autenticação e usuários
@@ -20,6 +20,7 @@ Este contrato descreve a API usada na avaliação mobile. Login compara `usernam
 | Método | Rota | Contrato | Resultado |
 | --- | --- | --- | --- |
 | POST | `/auth/login` | `{ "username": "admin", "password": "admin123" }` | `{ "authenticated": true, "userId": "<uuid>", "name": "admin", "username": "admin", "email": "admin@gmail.com", "role": "ADMIN" }` |
+| POST | `/auth/forgot-password` | `{ "email": "ana@empresa.com", "newPassword": "nova" }` | `{ "updated": true, "userId": "<uuid>", "email": "ana@empresa.com" }`; `404` se o e-mail não existe. Rota pública |
 | GET | `/users?page=0&size=20` | Query `page`, `size` | Página de usuários (qualquer perfil) |
 | GET | `/users/{id}` | Path `id` UUID | Usuário |
 | POST | `/users` | `{ "name": "Ana", "username": "ana", "email": "ana@empresa.com", "password": "senha", "role": "VIEWER" }` | `201 Created`, usuário ativo (ADMIN/MANAGER) |

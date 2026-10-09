@@ -119,6 +119,16 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<!-- Publica docs/site/index.html em /docs, sem duplicar o arquivo. -->
+			<resource>
+				<directory>docs/site</directory>
+				<targetPath>static/docs</targetPath>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

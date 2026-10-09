@@ -31,3 +31,7 @@
 - **Decisão:** o login passa a usar `username` + senha (texto puro, comparação direta). `app_user` ganha a coluna `username` única (migration V2), e a V2 insere o admin padrão (`admin` / `admin@gmail.com` / `admin123`). Os perfis `ADMIN`, `MANAGER` e `VIEWER` são aplicados por `RoleAccessInterceptor`, que lê o header `X-User-Role` enviado pelo cliente. Só ADMIN e MANAGER criam/editam/excluem usuários, problemas, materiais e equipes. VIEWER consulta, registra ocorrências, muda o status da equipe e ajusta estoque por `PATCH /materials/{id}/stock`.
 - **Riscos aceitos:** o header não é autenticado e pode ser forjado; a senha do admin é conhecida; `forgot-password` continua público. Uso exclusivo para estudo.
 - **Interpretação a confirmar:** equipes foram tratadas como recurso de gestão (VIEWER só altera o status).
+## 0006 — Site de documentação servido em /docs
+- **Data:** 2026-10-09
+- **Estado:** vigente (pedido do humano; complementa a decisão 0002)
+- **Decisão:** `docs/site/index.html` continua sendo a única fonte. O `pom.xml` o copia para `static/docs` no build (sem nova dependência) e `DocsConfiguration` redireciona `/docs`, `/docs/` e `/api/docs` para `/docs/index.html`. O `Dockerfile` copia `docs/site` para o estágio de build. A rota é pública e fica fora do interceptor de perfil (`/api/v1/**`).
