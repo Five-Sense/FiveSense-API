@@ -32,3 +32,12 @@
 - `docs/site/index.html`: exemplos de usuário com `username`; novo `POST /auth/forgot-password`; texto do `PATCH /materials/{id}/stock`, status de equipe e ocorrência revisados; painel "Autenticação e perfis"; bloco de headers (`X-User-Role`) por endpoint; etiqueta de acesso por endpoint (Público / ADMIN-MANAGER / qualquer perfil); link do topo aponta para o Swagger UI quando servido por HTTP.
 - `pom.xml`: recurso `docs/site` copiado para `static/docs`; `Dockerfile` passa a copiar `docs/site`. Novo `DocsConfiguration` redireciona `/docs`, `/docs/` e `/api/docs` para `/docs/index.html` (decisão 0006).
 - Checks: `.\mvnw.cmd package` com JDK 25 — sucesso (testes e ArchUnit); `static/docs/index.html` presente no jar; `node --check` no script da página — OK. Não executado: subir a aplicação e abrir `/docs` no navegador (sem banco/Docker disponível), então o redirect não foi exercitado de ponta a ponta.
+
+## [2026-10-16] — Carga inicial 5S (V3–V6)
+- `V3__default_viewer_user.sql`: usuário `visualizador` / `visualizador@gmail.com` / `viewer123` (VIEWER, ACTIVE).
+- `V4__seed_5s_materials.sql`: Panos reutilizáveis (10), Pás de sujeira (5), Vassouras (10), Borrifadores de álcool (15), Estopas (50); mínimos 3/2/3/5/15.
+- `V5__seed_5s_teams.sql`: Produção A/B, Almoxarifado, Manutenção e Expedição, com representantes fictícios e horários em texto.
+- `V6__seed_5s_problems.sql`: 10 problemas (vassoura, borrifador, pá, pano e estopa), nomes ≤ 20 caracteres, `related_email` = `admin@gmail.com`.
+- Inserções com `ON CONFLICT DO NOTHING`; V1/V2 não foram alteradas. Docs atualizadas: `data-model.md`, `login.md`, `decision-log.md` (0007), `issues.md`, `implementation-plan.md`.
+- Checks: revisão manual contra constraints de V1/V2 (tamanhos, CHECKs, unicidade). Não executado: Flyway/PostgreSQL, `.\mvnw.cmd verify` e testes de integração (Docker indisponível; ambiente com Java 17).
+- Risco residual: `ON CONFLICT DO NOTHING` ignora silenciosamente linhas que colidam com dados já existentes (ex.: material de mesmo nome); a V3 falharia no insert silenciosamente se o e-mail/username já existisse.

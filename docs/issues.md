@@ -11,7 +11,9 @@
 
 - [2026-10-09] Login por `username`, admin padrão (migration V2), perfis ADMIN/MANAGER/VIEWER via header `X-User-Role` e `PATCH /materials/{id}/stock` (decisão 0005).
 - [2026-10-09] Site `docs/site/index.html` revisado (login por username, forgot-password, perfis, headers, ajuste de estoque) e publicado em `/docs` (decisão 0006).
+- [2026-10-16] Migrations `V3`–`V6`: usuário VIEWER padrão, materiais, equipes e problemas 5S (decisão 0007).
 ## Pendente
+- [ ] Executar `V3`–`V6` em PostgreSQL real (Docker indisponível na verificação) e confirmar os valores de mínimo de estoque e `related_email` escolhidos.
 - [ ] Confirmar com o humano se VIEWER pode criar/editar equipes (hoje só altera o status).
 - [ ] Teste de integração PostgreSQL/Testcontainers para a migration V2 e os fluxos de perfil (Docker indisponível na verificação).
 

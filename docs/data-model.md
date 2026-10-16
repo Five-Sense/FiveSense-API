@@ -66,6 +66,7 @@ Imagens de ocorrência/material não fazem parte do escopo atual da API, apesar 
 ## Migrações
 
 - Flyway em `src/main/resources/db/migration`; `V1` define o schema atual.
+- `V2`: coluna `username` e admin padrão. `V3`: usuário `VIEWER` padrão. `V4`: 5 materiais 5S. `V5`: 5 equipes de exemplo. `V6`: 10 problemas ligados aos materiais. Todas as cargas usam `ON CONFLICT DO NOTHING` (dados de avaliação, ver decisão 0007).
 - Uma migração aplicada nunca é editada; correções usam nova versão.
 - Constraints e índices relevantes pertencem ao banco, não apenas ao Java.
 - Seeds de desenvolvimento devem ser separados de migrações de produção.

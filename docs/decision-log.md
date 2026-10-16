@@ -35,3 +35,9 @@
 - **Data:** 2026-10-09
 - **Estado:** vigente (pedido do humano; complementa a decisão 0002)
 - **Decisão:** `docs/site/index.html` continua sendo a única fonte. O `pom.xml` o copia para `static/docs` no build (sem nova dependência) e `DocsConfiguration` redireciona `/docs`, `/docs/` e `/api/docs` para `/docs/index.html`. O `Dockerfile` copia `docs/site` para o estágio de build. A rota é pública e fica fora do interceptor de perfil (`/api/v1/**`).
+
+## 0007 — Carga inicial de dados 5S por migrations
+- **Data:** 2026-10-16
+- **Estado:** vigente (pedido do humano; exceção consciente à recomendação de separar seeds de migrations de produção em `data-model.md`)
+- **Decisão:** as migrations `V3`–`V6` inserem o usuário `VIEWER` padrão (`visualizador` / `viewer123`), 5 materiais (Panos reutilizáveis 10, Pás de sujeira 5, Vassouras 10, Borrifadores de álcool 15, Estopas 50; mínimos 3, 2, 3, 5 e 15), 5 equipes com representantes fictícios e 10 problemas relacionados aos materiais. Os mínimos de estoque e o `related_email` dos problemas (`admin@gmail.com`) foram escolhidos pela IA por não terem sido informados.
+- **Riscos aceitos:** senha em texto puro e dados fictícios em qualquer banco que rode as migrations; não usar em produção real.

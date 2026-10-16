@@ -6,6 +6,7 @@ Este documento descreve o fluxo de acesso usado na avaliação mobile.
 - O serviço procura o usuário pelo `username` (sem diferenciar maiúsculas) e compara a senha recebida diretamente com `app_user.password`. Usuário inativo não entra.
 - Uma correspondência retorna `authenticated`, `userId`, `name`, `username`, `email` e `role`; dados incorretos retornam erro HTTP.
 - Admin padrão criado pela migration `V2__username_and_default_admin.sql`: username `admin`, e-mail `admin@gmail.com`, senha `admin123`.
+- Visualizador padrão criado pela migration `V3__default_viewer_user.sql`: username `visualizador`, e-mail `visualizador@gmail.com`, senha `viewer123`, papel `VIEWER`.
 
 ## Perfis (`role`)
 
