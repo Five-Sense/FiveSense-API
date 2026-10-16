@@ -27,3 +27,5 @@
 - Ocorrência: envia e-mail aos usuários ADMIN/MANAGER ativos e ao contato do problema (resposta padrão). Agora com anexo opcional de imagem. OK.
 - Estoque: material criado abaixo do mínimo ou cruzando o mínimo dispara alerta aos ADMIN/MANAGER. OK.
 - "Esqueci minha senha": não existe no escopo atual (sem endpoint, service ou requisito). Alterar o fluxo de login exige decisão humana (AGENTS.md). Nenhum envio foi adicionado; aguardando decisão caso o fluxo seja desejado.
+
+- [2026-10-16] CORS liberado para http://localhost:8081 (decisão 0008). Pendente: validar com o cliente React Native real.

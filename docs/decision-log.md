@@ -41,3 +41,9 @@
 - **Estado:** vigente (pedido do humano; exceção consciente à recomendação de separar seeds de migrations de produção em `data-model.md`)
 - **Decisão:** as migrations `V3`–`V6` inserem o usuário `VIEWER` padrão (`visualizador` / `viewer123`), 5 materiais (Panos reutilizáveis 10, Pás de sujeira 5, Vassouras 10, Borrifadores de álcool 15, Estopas 50; mínimos 3, 2, 3, 5 e 15), 5 equipes com representantes fictícios e 10 problemas relacionados aos materiais. Os mínimos de estoque e o `related_email` dos problemas (`admin@gmail.com`) foram escolhidos pela IA por não terem sido informados.
 - **Riscos aceitos:** senha em texto puro e dados fictícios em qualquer banco que rode as migrations; não usar em produção real.
+
+## 0008 — CORS para o cliente de desenvolvimento
+- **Data:** 2026-10-16
+- **Estado:** vigente (pedido do humano)
+- **Decisão:** CorsConfiguration (shared/config) libera CORS em /** para as origens de pp.cors.allowed-origins (padrão http://localhost:8081 e http://127.0.0.1:8081, configurável por CORS_ALLOWED_ORIGINS), com métodos GET/POST/PUT/PATCH/DELETE/OPTIONS e qualquer header (inclui X-User-Role). Não usa Spring Security nem nova dependência; origens fora da lista continuam bloqueadas.
+

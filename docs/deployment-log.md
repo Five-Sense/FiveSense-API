@@ -41,3 +41,9 @@
 - Inserções com `ON CONFLICT DO NOTHING`; V1/V2 não foram alteradas. Docs atualizadas: `data-model.md`, `login.md`, `decision-log.md` (0007), `issues.md`, `implementation-plan.md`.
 - Checks: revisão manual contra constraints de V1/V2 (tamanhos, CHECKs, unicidade). Não executado: Flyway/PostgreSQL, `.\mvnw.cmd verify` e testes de integração (Docker indisponível; ambiente com Java 17).
 - Risco residual: `ON CONFLICT DO NOTHING` ignora silenciosamente linhas que colidam com dados já existentes (ex.: material de mesmo nome); a V3 falharia no insert silenciosamente se o e-mail/username já existisse.
+
+## [2026-10-16] — CORS para localhost:8081
+- Novo shared/config/CorsConfiguration e propriedade pp.cors.allowed-origins (CORS_ALLOWED_ORIGINS); operations.md e .env.example atualizados; decisão 0008.
+- Teste CorsConfigurationTests (preflight com X-User-Role, requisição simples, origem não permitida).
+- Checks: .\mvnw.cmd test com JDK 25 — BUILD SUCCESS, 54 testes, 0 falhas (inclui ArchUnit). Não executado: integração com Testcontainers (Docker indisponível), métricas de complexidade e teste com o app React Native real.
+- Risco residual: celular físico/Expo Go acessa a API pela rede local; se o cliente for navegador em outro IP/porta, é preciso incluí-lo em CORS_ALLOWED_ORIGINS.

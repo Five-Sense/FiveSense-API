@@ -24,3 +24,5 @@ API de avaliação mobile implementada como monólito Spring MVC com PostgreSQL 
 - [ ] Executar compilação usando Java 21.
 - [ ] Fazer integração do cliente mobile e validar os contratos em `api-contract.md`.
 - [ ] Configurar `MAIL_*` somente se o envio de e-mail for necessário.
+
+- [x] CORS para o cliente de desenvolvimento em localhost:8081 (decisão 0008).
