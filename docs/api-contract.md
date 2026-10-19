@@ -48,11 +48,11 @@ O admin padrão (`admin` / `admin@gmail.com` / `admin123`) é criado pela migrat
 | GET | `/materials/options` | Opções `id`/`name` para ocorrência |
 | POST/PUT/DELETE | `/materials[/{id}]` | CRUD; create `201`, delete `204` (ADMIN/MANAGER) |
 | PATCH | `/materials/{id}/stock` | `{ "delta": -3 }` (inteiro não zero; negativo retira, positivo repõe). Resultado deve ficar entre 0 e 999, senão `400`. Dispara alerta de estoque baixo ao cruzar o mínimo. Qualquer perfil. |
-| POST | `/occurrences/images` | `multipart/form-data` com campo `image` (máx. 5MB); `201 Created` com `{ "imageId": "<uuid>" }` |
-| POST | `/occurrences` | `{ "problemId": "<uuid>", "materialId": "<uuid>", "affectedQuantity": 2, "reportedByUserId": "<uuid>", "imageId": "<uuid>" }` (`imageId` opcional); `201 Created` |
+| POST | `/occurrences/images` | Até 5 imagens por chamada, cada uma com até 5MB. `multipart/form-data`: campo `images` (ou `image`) repetido, cada valor sendo um arquivo ou um texto em base64 (puro ou `data:image/png;base64,...`). `application/json`: `{ "images": [ { "name": "foto.png", "data": "<base64>" } ] }` (`name` opcional). `201 Created` com `{ "imageId": "<uuid>", "imageIds": ["<uuid>", "..."] }` |
+| POST | `/occurrences` | `{ "problemId": "<uuid>", "materialId": "<uuid>", "affectedQuantity": 2, "reportedByUserId": "<uuid>", "imageIds": ["<uuid>", "<uuid>"] }` (`imageIds` opcional, até 5; `imageId` único continua aceito); `201 Created` |
 | GET | `/occurrences?page&size` | Página de ocorrências |
 
-Ocorrências não alteram estoque. E-mail permanece best effort conforme configuração SMTP. Quando a ocorrência informa `imageId`, a imagem é lida do arquivo temporário correspondente, anexada ao e-mail dos destinatários e do contato do problema, e o arquivo é excluído após o envio. A imagem nunca é persistida no banco.
+Ocorrências não alteram estoque. E-mail permanece best effort conforme configuração SMTP. Quando a ocorrência informa `imageIds` (e/ou `imageId`), cada imagem é lida do arquivo temporário correspondente, todas são anexadas ao e-mail dos destinatários e do contato do problema, e os arquivos são excluídos após o envio. Imagens cujo arquivo temporário já não existe são ignoradas. As imagens nunca são persistidas no banco. O upload é atômico: se uma imagem for rejeitada, nenhuma da chamada é mantida. O nome do anexo recebe a extensão do tipo real detectado (PNG, JPEG, GIF ou WebP) para o e-mail ser entregue como imagem mesmo sem nome ou com extensão errada.
 
 ## DTOs principais e validação
 
@@ -60,8 +60,8 @@ Ocorrências não alteram estoque. E-mail permanece best effort conforme configu
 - `Team UpsertRequest`: `name` ou `code` obrigatório; `representatives` e `schedule` texto até 255. `StatusRequest.status`: enum de status 5S.
 - `Problem UpsertRequest`: nome até 20, e-mail relacionado, resposta padrão e `active` opcional.
 - `Material UpsertRequest`: nome até 55, quantidades 0–999 e `active` opcional.
-- `Occurrence CreateRequest`: IDs de problema, material e usuário; `affectedQuantity` positivo; `imageId` opcional, obtido no upload temporário.
-- `Occurrence image upload`: `multipart/form-data` com campo `image` obrigatório (arquivo não vazio, limite de 5MB). Resposta `ImageUploadResponse { imageId }`.
+- `Occurrence CreateRequest`: IDs de problema, material e usuário; `affectedQuantity` positivo; `imageIds` opcional (até 5 IDs obtidos no upload temporário) e `imageId` opcional (legado, uma imagem).
+- `Occurrence image upload`: 1 a 5 imagens não vazias, cada uma com até 5MB (`OCCURRENCE_IMAGE_MAX_SIZE`; a requisição multipart inteira aceita até 25MB, `OCCURRENCE_IMAGE_MAX_REQUEST_SIZE`). Em base64 o limite vale para a imagem decodificada. Resposta `ImageUploadResponse { imageId, imageIds }`; `imageId` repete a primeira imagem. Erros: `400` (nenhuma imagem, mais de 5, vazia ou base64 inválido) e `413` (imagem acima do limite).
 - Respostas paginadas incluem `content`, `totalElements`, `totalPages`, `size` e `number`.
 
 ## Respostas e erros

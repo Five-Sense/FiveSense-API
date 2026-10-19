@@ -13,14 +13,14 @@
 
 ## Ocorrência
 
-1. Opcional: cliente envia a imagem selecionada para `POST /api/v1/occurrences/images` (multipart/form-data). A API grava a imagem em arquivo temporário e devolve um `imageId`. A imagem não é gravada no banco.
-2. Cliente seleciona problema/material e informa quantidade, `reportedByUserId` e, se houver, o `imageId` do passo anterior.
+1. Opcional: cliente envia de 1 a 5 imagens para `POST /api/v1/occurrences/images`, como arquivos multipart, texto base64 em multipart ou JSON com base64. A API grava cada imagem em arquivo temporário e devolve `imageIds` (e `imageId` com a primeira). As imagens não são gravadas no banco.
+2. Cliente seleciona problema/material e informa quantidade, `reportedByUserId` e, se houver, os `imageIds` do passo anterior.
 3. API valida referências e quantidade.
 4. API persiste a ocorrência (sem a imagem).
 5. Quantidade afetada não altera estoque por decisão humana.
-6. API notifica por e-mail todos os usuários ADMIN e MANAGER e envia a resposta padrão ao e-mail relacionado ao problema. Quando a ocorrência tem `imageId`, a imagem temporária é anexada a esses e-mails. RN012 também prevê resposta padrão ao e-mail relacionado ao problema.
-7. Após o envio, o arquivo temporário da imagem é excluído. O banco permanece sem a imagem.
-8. Envio pós-commit é best effort, sem outbox durável ou retry automático. Se a imagem temporária já tiver expirado ou sido removida, o e-mail segue sem anexo.
+6. API notifica por e-mail todos os usuários ADMIN e MANAGER e envia a resposta padrão ao e-mail relacionado ao problema. Quando a ocorrência tem `imageIds`, todas as imagens temporárias são anexadas a esses e-mails. RN012 também prevê resposta padrão ao e-mail relacionado ao problema.
+7. Após o envio, os arquivos temporários das imagens são excluídos. O banco permanece sem as imagens.
+8. Envio pós-commit é best effort, sem outbox durável ou retry automático. Imagens temporárias que já tenham expirado ou sido removidas são ignoradas; se nenhuma restar, o e-mail segue sem anexo.
 
 ## Equipe e 5S
 

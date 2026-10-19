@@ -8,6 +8,7 @@
 - Configuração padrão do PostgreSQL Supabase em `.env.example`.
 - Schema Flyway inicial alinhado ao modelo atual da API.
 - [2026-10-02] Imagem temporária no fluxo de ocorrência: upload em `POST /occurrences/images`, anexo no e-mail e exclusão após o envio; sem persistência no banco (decisão 0004).
+- [2026-10-19] Várias imagens por ocorrência (até 5) e upload também como texto base64 (multipart ou JSON); anexos com extensão do tipo real; sem persistência no banco (decisão 0009).
 
 - [2026-10-09] Login por `username`, admin padrão (migration V2), perfis ADMIN/MANAGER/VIEWER via header `X-User-Role` e `PATCH /materials/{id}/stock` (decisão 0005).
 - [2026-10-09] Site `docs/site/index.html` revisado (login por username, forgot-password, perfis, headers, ajuste de estoque) e publicado em `/docs` (decisão 0006).

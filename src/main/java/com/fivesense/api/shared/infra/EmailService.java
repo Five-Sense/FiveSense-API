@@ -11,6 +11,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class EmailService {
@@ -24,12 +27,15 @@ public class EmailService {
         catch (RuntimeException ex){log.warn("Email delivery failed");return false;}
     }
 
+    /** A file sent along with an e-mail; {@code name} is the file name shown to the recipient. */
+    public record Attachment(Path path,String name){}
+
     /**
-     * Sends an e-mail with a single file attachment. Best effort: a delivery failure is logged and
-     * reported through the return value, never thrown. The attachment is read from a temporary file
-     * and is never persisted by this service.
+     * Sends an e-mail with one or more file attachments. Best effort: a delivery failure is logged and
+     * reported through the return value, never thrown. Attachments are read from temporary files
+     * and are never persisted by this service. Duplicate names get a numeric prefix so none is lost.
      */
-    public boolean sendWithAttachment(String recipient,String subject,String body,Path attachment,String attachmentName){
+    public boolean sendWithAttachments(String recipient,String subject,String body,List<Attachment> attachments){
         try {
             MimeMessage message=mailSender.createMimeMessage();
             MimeMessageHelper helper=new MimeMessageHelper(message,true);
@@ -37,7 +43,12 @@ public class EmailService {
             helper.setTo(recipient);
             helper.setSubject(subject);
             helper.setText(body);
-            helper.addAttachment(attachmentName,new FileSystemResource(attachment));
+            Set<String> used=new HashSet<>();
+            for(Attachment attachment:attachments){
+                String name=attachment.name();
+                for(int copy=2;!used.add(name);copy++)name=copy+"-"+attachment.name();
+                helper.addAttachment(name,new FileSystemResource(attachment.path()));
+            }
             mailSender.send(message);
             return true;
         } catch (Exception ex){log.warn("Email delivery with attachment failed");return false;}

@@ -39,6 +39,7 @@ Os artefatos `Dockerfile` e `compose.yaml` existem. `.env.example` documenta pla
 | `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD` | Conexão PostgreSQL Supabase (SSL obrigatório); senha do banco fica separada da URL. |
 | `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | SMTP; o usuário SMTP também é usado como remetente quando configurado. |
 | `MAIL_SMTP_AUTH`, `MAIL_STARTTLS` | Controles SMTP. |
+| `OCCURRENCE_IMAGE_MAX_SIZE`, `OCCURRENCE_IMAGE_MAX_REQUEST_SIZE`, `OCCURRENCE_IMAGE_DIR` | Limite por imagem (padrão 5MB), limite da requisição multipart com até 5 imagens (padrão 25MB) e diretório dos arquivos temporários das imagens de ocorrência. |
 | `CORS_ALLOWED_ORIGINS` | Origens CORS permitidas, separadas por vírgula. Padrão: `http://localhost:8081,http://127.0.0.1:8081` (Metro/Expo web). Acrescente o IP da rede local, ex.: `http://192.168.0.10:8081`. |
 
 `.env.example` e `.env` incluem todas as variáveis consumidas pela aplicação. `application.properties` carrega `.env` em execução direta; Docker Compose também usa o arquivo para preencher o ambiente do container. SMTP pode ficar sem configuração se os fluxos de envio de e-mail não forem usados.

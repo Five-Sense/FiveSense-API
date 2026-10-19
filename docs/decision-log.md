@@ -47,3 +47,11 @@
 - **Estado:** vigente (pedido do humano)
 - **Decisão:** CorsConfiguration (shared/config) libera CORS em /** para as origens de pp.cors.allowed-origins (padrão http://localhost:8081 e http://127.0.0.1:8081, configurável por CORS_ALLOWED_ORIGINS), com métodos GET/POST/PUT/PATCH/DELETE/OPTIONS e qualquer header (inclui X-User-Role). Não usa Spring Security nem nova dependência; origens fora da lista continuam bloqueadas.
 
+
+## 0009 — Várias imagens por ocorrência e upload em base64
+- **Data:** 2026-10-19
+- **Estado:** vigente (pedido do humano; estende a decisão 0004 sem reabrir a persistência de imagens)
+- **Contexto:** o upload aceitava uma única imagem por vez, apenas como arquivo multipart no campo `image`; clientes que enviam a imagem como texto (base64) não conseguiam usar o fluxo, e o anexo podia chegar sem tipo de imagem quando o nome não tinha extensão.
+- **Decisão:** `POST /api/v1/occurrences/images` passa a receber de 1 a 5 imagens por chamada, por multipart (campo `images`, ou `image` legado, repetido; cada valor é arquivo ou texto base64, puro ou `data:...;base64,`) ou por JSON `{ "images": [ { "name", "data" } ] }`. A resposta traz `imageIds` e mantém `imageId` (primeira imagem). `POST /api/v1/occurrences` aceita `imageIds` (até 5) e continua aceitando `imageId`. Todas as imagens são anexadas aos e-mails e os arquivos temporários são excluídos após o envio. O nome do anexo recebe a extensão do tipo real detectado (PNG, JPEG, GIF, WebP). `EmailService.sendWithAttachment` foi substituído por `sendWithAttachments`.
+- **Limites:** 5 imagens por ocorrência; 5MB por imagem (`OCCURRENCE_IMAGE_MAX_SIZE`, também aplicado ao tamanho decodificado do base64); 25MB por requisição multipart (`OCCURRENCE_IMAGE_MAX_REQUEST_SIZE`, nova variável). A escolha de 5 imagens e 25MB foi da IA, por não ter sido informada.
+- **Mantido:** nenhuma imagem é persistida no banco; sem nova dependência nem migração; quantidade afetada continua sem alterar estoque.

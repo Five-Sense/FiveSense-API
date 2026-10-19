@@ -30,5 +30,5 @@ Hospedagem e infraestrutura ainda não foram escolhidas.
 - Flyway está na versão esperada.
 - Conexão PostgreSQL e SMTP funcionam.
 - Login simples retorna a identidade cadastrada; rotas ficam abertas.
-- Fluxo de ocorrência notifica todos os usuários ADMIN e MANAGER por e-mail, sem anexo de imagem.
+- Fluxo de ocorrência notifica todos os usuários ADMIN e MANAGER por e-mail; com `imageIds`, as imagens (até 5) seguem como anexos.
 - Não há segredo ou stack trace em logs/respostas.
