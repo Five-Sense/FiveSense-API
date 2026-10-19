@@ -20,11 +20,11 @@ Catálogo de problemas, e-mail relacionado e resposta padrão. É referenciado p
 
 ## Materials
 
-Materiais, quantidade, limites de estoque e alertas. Imagens fora do escopo atual. É referenciado por Occurrences.
+Materiais, quantidade, limites de estoque e alertas. Imagens fora do escopo. É referenciado por Occurrences.
 
 ## Occurrences
 
-Registro de problema, material, quantidade afetada, autor e notificação. Imagens fora do escopo; quantidade afetada não altera estoque por decisão humana.
+Registro de problema, material, quantidade afetada, autor e notificação. Recebe até 5 imagens na própria requisição (binário ou base64), usadas apenas no e-mail HTML e nunca persistidas (decisão 0010); quantidade afetada não altera estoque por decisão humana.
 
 ## Matriz de dependência
 

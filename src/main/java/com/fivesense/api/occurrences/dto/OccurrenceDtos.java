@@ -7,21 +7,16 @@ import java.util.List;
 import java.util.UUID;
 
 public final class OccurrenceDtos {
-    /** Maximum number of images attached to one occurrence (and accepted by one upload call). */
+    /** Maximum number of images sent with one occurrence. */
     public static final int MAX_IMAGES=5;
     private OccurrenceDtos() {}
-    /** {@code imageIds} is the multi-image field; {@code imageId} is kept so clients sending a single image keep working. */
-    public record CreateRequest(@NotNull UUID problemId,@NotNull UUID materialId,@NotNull @Positive Integer affectedQuantity,@NotNull UUID reportedByUserId,UUID imageId,@Size(max=MAX_IMAGES) List<@NotNull UUID> imageIds) {
-        public CreateRequest(UUID problemId,UUID materialId,Integer affectedQuantity){this(problemId,materialId,affectedQuantity,new UUID(0,0),null,null);}
-        public CreateRequest(UUID problemId,UUID materialId,Integer affectedQuantity,UUID reportedByUserId){this(problemId,materialId,affectedQuantity,reportedByUserId,null,null);}
-        public CreateRequest(UUID problemId,UUID materialId,Integer affectedQuantity,UUID reportedByUserId,UUID imageId){this(problemId,materialId,affectedQuantity,reportedByUserId,imageId,null);}
+    /** JSON body. {@code images} is optional: each item carries the image as base64 text (see {@link ImageContent}). */
+    public record CreateRequest(@NotNull UUID problemId,@NotNull UUID materialId,@NotNull @Positive Integer affectedQuantity,@NotNull UUID reportedByUserId,@Size(max=MAX_IMAGES) List<@NotNull @Valid ImageContent> images) {}
+    /** Text fields of the {@code multipart/form-data} variant; the images travel as file or base64 parts named {@code images}. */
+    public record CreateForm(@NotNull UUID problemId,@NotNull UUID materialId,@NotNull @Positive Integer affectedQuantity,@NotNull UUID reportedByUserId) {
+        public CreateRequest toRequest(){return new CreateRequest(problemId,materialId,affectedQuantity,reportedByUserId,null);}
     }
-    public record Response(UUID id,UUID problemId,UUID materialId,UUID reportedByUserId,int affectedQuantity,Instant createdAt) {}
-    /** {@code imageIds} lists every stored image in upload order; {@code imageId} repeats the first one for single-image clients. */
-    public record ImageUploadResponse(UUID imageId,List<UUID> imageIds) {
-        public static ImageUploadResponse of(List<UUID> ids){return new ImageUploadResponse(ids.isEmpty()?null:ids.get(0),List.copyOf(ids));}
-    }
-    /** JSON upload: images sent as text (base64, with or without a {@code data:image/...;base64,} prefix). */
-    public record ImageBatchRequest(@NotEmpty @Size(max=MAX_IMAGES) List<@NotNull @Valid ImageContent> images) {}
+    /** An image sent as text: base64 (standard or URL-safe), with or without a {@code data:image/...;base64,} prefix. {@code name} is optional. */
     public record ImageContent(@Size(max=255) String name,@NotBlank String data) {}
+    public record Response(UUID id,UUID problemId,UUID materialId,UUID reportedByUserId,int affectedQuantity,Instant createdAt) {}
 }

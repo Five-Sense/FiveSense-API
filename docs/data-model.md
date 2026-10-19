@@ -53,7 +53,7 @@ Constraint: pelo menos `name` ou `code`; `name` e `code` são únicos sem difere
 - `affectedQuantity: integer`, maior que zero
 - `createdAt`
 
-Imagens de ocorrência/material não fazem parte do escopo atual da API, apesar de RF016/RN013/RN017. A quantidade afetada não altera `Material.stockQuantity`. Ocorrências são registros append-only sem ciclo de status. Usuários ativos `ADMIN` e `MANAGER` recebem notificação; o endereço associado ao problema também recebe sua resposta padrão.
+Imagens de ocorrência não são persistidas: chegam na requisição e seguem apenas no e-mail (decisão 0010); imagens de material continuam fora do escopo, apesar de RF016/RN013/RN017. A quantidade afetada não altera `Material.stockQuantity`. Ocorrências são registros append-only sem ciclo de status. Usuários ativos `ADMIN` e `MANAGER` recebem notificação; o endereço associado ao problema também recebe sua resposta padrão. `reported_by_user_id` precisa ser um usuário ativo existente (validado antes do insert; a FK continua no banco).
 
 ## Relações
 

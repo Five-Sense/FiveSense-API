@@ -22,7 +22,7 @@ Antes de implementar, registrar:
 - objetivo e critérios de aceite;
 - requisitos RF/NF/RN envolvidos;
 - documentos lidos;
-- impacto em dados, segurança, e-mail e estoque; imagens não fazem parte do escopo atual da API;
+- impacto em dados, segurança, e-mail e estoque; imagens de ocorrência só vão no e-mail e nunca são persistidas;
 - testes unitários, integração e fitness functions necessários;
 - migrações e dependências previstas;
 - riscos, suposições e decisão humana pendente.

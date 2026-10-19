@@ -13,14 +13,14 @@
 
 ## Ocorrência
 
-1. Opcional: cliente envia de 1 a 5 imagens para `POST /api/v1/occurrences/images`, como arquivos multipart, texto base64 em multipart ou JSON com base64. A API grava cada imagem em arquivo temporário e devolve `imageIds` (e `imageId` com a primeira). As imagens não são gravadas no banco.
-2. Cliente seleciona problema/material e informa quantidade, `reportedByUserId` e, se houver, os `imageIds` do passo anterior.
-3. API valida referências e quantidade.
-4. API persiste a ocorrência (sem a imagem).
+1. Cliente seleciona problema/material e informa quantidade, `reportedByUserId` e, se houver, até 5 imagens junto da própria requisição: JSON com `images[].data` em base64, ou multipart com partes `images` binárias ou em base64. Não há upload separado nem `imageId`.
+2. API valida as imagens (tipo real, tamanho, quantidade) antes de qualquer acesso ao banco.
+3. API valida referências (usuário ativo, problema ativo, material ativo) e quantidade.
+4. API persiste a ocorrência (sem as imagens).
 5. Quantidade afetada não altera estoque por decisão humana.
-6. API notifica por e-mail todos os usuários ADMIN e MANAGER e envia a resposta padrão ao e-mail relacionado ao problema. Quando a ocorrência tem `imageIds`, todas as imagens temporárias são anexadas a esses e-mails. RN012 também prevê resposta padrão ao e-mail relacionado ao problema.
-7. Após o envio, os arquivos temporários das imagens são excluídos. O banco permanece sem as imagens.
-8. Envio pós-commit é best effort, sem outbox durável ou retry automático. Imagens temporárias que já tenham expirado ou sido removidas são ignoradas; se nenhuma restar, o e-mail segue sem anexo.
+6. Depois do commit, a API enfileira os e-mails para todos os usuários ADMIN e MANAGER ativos e para o e-mail relacionado ao problema (resposta padrão, RN012). O envio roda em thread separada (`mailExecutor`): a resposta `201` não espera o SMTP.
+7. Cada e-mail é um HTML formatado com Thymeleaf (`templates/email/occurrence.html`) e traz as imagens embutidas no corpo (`cid:`), com versão em texto simples como alternativa. As imagens ficam só em memória durante o envio; nada é gravado em disco ou no banco.
+8. Envio é best effort, sem outbox durável ou retry automático; há timeouts de SMTP, e uma falha fica apenas nos logs. Se não houver ADMIN/MANAGER ativo, só o contato do problema é notificado e um aviso é registrado.
 
 ## Equipe e 5S
 

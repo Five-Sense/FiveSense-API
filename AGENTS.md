@@ -4,7 +4,7 @@
 
 Este arquivo é o contrato universal da **Five Sense API** para pessoas, agentes de IA e automações. Leia-o antes de qualquer implementação relevante e use `docs/*` como fonte canônica detalhada.
 
-O projeto é uma API backend de avaliação mobile de gerenciamento 5S para uma única empresa. Cobre login simples por e-mail/senha, usuários, problemas, ocorrências/alertas, equipes e horários, materiais, estoque e notificações por e-mail. Não há UI, dashboards ou imagens. Todas as rotas são públicas; login valida credenciais e retorna a identidade do usuário.
+O projeto é uma API backend de avaliação mobile de gerenciamento 5S para uma única empresa. Cobre login simples por e-mail/senha, usuários, problemas, ocorrências/alertas, equipes e horários, materiais, estoque e notificações por e-mail. Não há UI nem dashboards; imagens existem apenas no fluxo de ocorrência, em memória, e seguem só no e-mail (nunca persistidas). Todas as rotas são públicas; login valida credenciais e retorna a identidade do usuário.
 
 ## Regras invioláveis
 
@@ -33,7 +33,7 @@ O projeto é uma API backend de avaliação mobile de gerenciamento 5S para uma 
 - Login direto por e-mail e senha; cadastro armazena a senha como recebida e as rotas ficam abertas.
 - Bean Validation.
 - MapStruct 1.6.3.
-- Spring Mail; Thymeleaf pode ser usado apenas para templates de e-mail enquanto permanecer como dependência.
+- Spring Mail e Thymeleaf (somente para templates de e-mail HTML); envio de e-mail assíncrono em thread separada.
 - Spring Boot Actuator, com exposição somente de health/readiness sem detalhes sensíveis.
 - springdoc OpenAPI.
 - Docker para ambiente local, integração e empacotamento.

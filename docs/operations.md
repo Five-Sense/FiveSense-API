@@ -39,7 +39,8 @@ Os artefatos `Dockerfile` e `compose.yaml` existem. `.env.example` documenta pla
 | `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD` | Conexão PostgreSQL Supabase (SSL obrigatório); senha do banco fica separada da URL. |
 | `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | SMTP; o usuário SMTP também é usado como remetente quando configurado. |
 | `MAIL_SMTP_AUTH`, `MAIL_STARTTLS` | Controles SMTP. |
-| `OCCURRENCE_IMAGE_MAX_SIZE`, `OCCURRENCE_IMAGE_MAX_REQUEST_SIZE`, `OCCURRENCE_IMAGE_DIR` | Limite por imagem (padrão 5MB), limite da requisição multipart com até 5 imagens (padrão 25MB) e diretório dos arquivos temporários das imagens de ocorrência. |
+| `MAIL_CONNECTION_TIMEOUT_MS`, `MAIL_TIMEOUT_MS` | Timeouts de conexão (padrão 5000) e de leitura/escrita (padrão 10000) do SMTP. Sem eles um servidor inalcançável trava a thread de envio indefinidamente. |
+| `OCCURRENCE_IMAGE_MAX_SIZE`, `OCCURRENCE_IMAGE_MAX_REQUEST_SIZE` | Limite por imagem (padrão 5MB) e da requisição multipart com até 5 imagens (padrão 25MB). |
 | `CORS_ALLOWED_ORIGINS` | Origens CORS permitidas, separadas por vírgula. Padrão: `http://localhost:8081,http://127.0.0.1:8081` (Metro/Expo web). Acrescente o IP da rede local, ex.: `http://192.168.0.10:8081`. |
 
 `.env.example` e `.env` incluem todas as variáveis consumidas pela aplicação. `application.properties` carrega `.env` em execução direta; Docker Compose também usa o arquivo para preencher o ambiente do container. SMTP pode ficar sem configuração se os fluxos de envio de e-mail não forem usados.
@@ -51,7 +52,7 @@ Cadastre qualquer usuário por `POST /api/v1/users`. O campo `role` continua arm
 ## Backup
 
 - PostgreSQL: dump consistente e teste periódico de restauração.
-- Imagens estão fora do escopo atual.
+- Imagens de ocorrência existem só em memória durante o envio do e-mail; não há o que fazer backup.
 - Secrets: gerenciados fora do backup de dados e com recuperação documentada.
 
 ## Checks
