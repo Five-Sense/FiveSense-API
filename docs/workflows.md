@@ -24,7 +24,7 @@
 
 ## Equipe e 5S
 
-1. Manager cria equipe com nome ou código, representantes e horário.
+1. Manager cria equipe com nome ou código, representantes e o intervalo de horário (`startTime` e `endTime`, `HH:mm`, ex.: `07:30` e `09:00`).
 2. Viewer consulta equipes, status, representantes, horários organizados e estoque; não consulta usuários, dashboards ou catálogo de problemas fora da seleção necessária para ocorrência.
 3. Viewer envia o `teamId` e altera o status 5S daquela equipe. Não possui relação persistida com equipe; permissão limitada à operação de status.
 4. Manager consulta equipes e seus status.

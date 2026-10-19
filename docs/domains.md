@@ -12,7 +12,7 @@ Usuários, estado ativo e papel informativo. Cadastro público recebe nome, e-ma
 
 ## Teams
 
-Equipes, representantes textuais (`varchar(255)`), horários organizados por equipe e status 5S. Não é calendário de eventos nem possui entidades de representante; Viewer envia o ID alvo ao alterar status.
+Equipes, representantes textuais (`varchar(255)`), intervalo de horário (`startTime` e `endTime`, `HH:mm`, ex.: `07:30` e `09:00`) por equipe e status 5S. Não é calendário de eventos nem possui entidades de representante; Viewer envia o ID alvo ao alterar status.
 
 ## Problems
 

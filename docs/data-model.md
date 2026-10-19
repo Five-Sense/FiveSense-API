@@ -20,7 +20,7 @@ Este é o modelo aprovado e implementado pela migração Flyway atual. Mudanças
 - `name: varchar(255)`, opcional se `code` existir
 - `code: varchar(255)`, opcional se `name` existir
 - `representatives: varchar(255)`, nomes para exibição no totem, mantidos pelo Gestor; não é relação com User nem entidade própria
-- `schedule: varchar(255)`, horário exibido/organizado para a equipe como texto simples, sem eventos de calendário.
+- `startTime: time` e `endTime: time` (colunas `start_time` e `end_time`, tipo `TIME` do PostgreSQL): intervalo de horário da equipe, em `HH:mm` de 24 horas na API (ex.: `07:30` e `09:00`). Os dois ou nenhum, com o fim depois do início (CHECK `ck_team_time_interval`). Sem dias da semana, turnos ou texto livre, e sem calendário de eventos; a coluna antiga `schedule` foi removida (decisão 0011).
 - `status: DOING_5S | NOT_DOING_5S`; padrão `NOT_DOING_5S`.
 - `createdAt`, `updatedAt`
 
@@ -66,7 +66,7 @@ Imagens de ocorrência não são persistidas: chegam na requisição e seguem ap
 ## Migrações
 
 - Flyway em `src/main/resources/db/migration`; `V1` define o schema atual.
-- `V2`: coluna `username` e admin padrão. `V3`: usuário `VIEWER` padrão. `V4`: 5 materiais 5S. `V5`: 5 equipes de exemplo. `V6`: 10 problemas ligados aos materiais. Todas as cargas usam `ON CONFLICT DO NOTHING` (dados de avaliação, ver decisão 0007).
+- `V2`: coluna `username` e admin padrão. `V3`: usuário `VIEWER` padrão. `V4`: 5 materiais 5S. `V5`: 5 equipes de exemplo. `V6`: 10 problemas ligados aos materiais. Todas as cargas usam `ON CONFLICT DO NOTHING` (dados de avaliação, ver decisão 0007). `V7`: troca a coluna `team.schedule` (texto) por `start_time` e `end_time` (`TIME`) com CHECK de intervalo; aproveita o texto antigo apenas quando traz `HH:mm - HH:mm` (as 5 equipes de exemplo viram 07:00-09:00, 09:00-11:00, 13:00-15:00, 14:00-16:00 e 16:00-17:00) e descarta dias da semana e qualquer outro texto (decisão 0011).
 - Uma migração aplicada nunca é editada; correções usam nova versão.
 - Constraints e índices relevantes pertencem ao banco, não apenas ao Java.
 - Seeds de desenvolvimento devem ser separados de migrações de produção.

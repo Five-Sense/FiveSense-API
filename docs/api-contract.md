@@ -56,7 +56,7 @@ Ocorrências não alteram estoque. A API não oferece mais upload separado de im
 ## DTOs principais e validação
 
 - `User CreateRequest`: `name`, `username`, `email`, `password` (até 255), `role` (`ADMIN`, `MANAGER` ou `VIEWER`). `UpdateRequest`: `name`, `username`, `email`, `status`. `LoginRequest`: `username`, `password`.
-- `Team UpsertRequest`: `name` ou `code` obrigatório; `representatives` e `schedule` texto até 255. `StatusRequest.status`: enum de status 5S.
+- `Team UpsertRequest`: `name` ou `code` obrigatório; `representatives` texto até 255; `startTime` e `endTime` opcionais no formato `HH:mm` de 24 horas (ex.: `07:30` e `09:00`): os dois ou nenhum, com o fim depois do início, senão `400` com `errors`. A resposta (`TeamResponse`) devolve `startTime` e `endTime` (ou `null`); o campo antigo `schedule` não existe mais e, se enviado, é ignorado. `StatusRequest.status`: enum de status 5S.
 - `Problem UpsertRequest`: nome até 20, e-mail relacionado, resposta padrão e `active` opcional.
 - `Material UpsertRequest`: nome até 55, quantidades 0–999 e `active` opcional.
 - `Occurrence CreateRequest` (JSON): IDs de problema, material e usuário; `affectedQuantity` positivo; `images` opcional (até 5 itens `{ name?, data }`). A variante multipart usa os mesmos campos de texto mais as partes `images`.
