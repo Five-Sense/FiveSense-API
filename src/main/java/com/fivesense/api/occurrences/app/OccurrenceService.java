@@ -35,13 +35,17 @@ public class OccurrenceService {
      * and never stored.
      */
     @Transactional public OccurrenceDtos.Response create(OccurrenceDtos.CreateRequest request,List<MultipartFile> files,List<String> encoded){
-        var images=imageReader.read(files,encoded,request.images());
         String reporter=users.requireActive(request.reportedByUserId());
         var problem=problems.requireActive(request.problemId());
         String material=materials.requireActive(request.materialId());
         Occurrence occurrence=occurrences.save(new Occurrence(problem.id(),request.materialId(),request.reportedByUserId(),request.affectedQuantity(),Instant.now()));
         var recipients=users.notificationRecipients();
         if(recipients.isEmpty())log.warn("No active ADMIN or MANAGER to notify about occurrence {}",occurrence.getId());
+
+        // Images are only used to enrich the notification e-mail; they are never persisted and must never
+        // block the occurrence from being saved. Any problem reading them is logged and the occurrence
+        // still goes through, with the e-mail sent without the failed images.
+        var images=readImagesBestEffort(files,encoded,request.images(),occurrence.getId());
 
         Map<String,String> details=new LinkedHashMap<>();
         details.put("Problema",problem.name());details.put("Material",material);details.put("Quantidade afetada",String.valueOf(request.affectedQuantity()));
@@ -63,6 +67,19 @@ public class OccurrenceService {
         return mapper.toResponse(occurrence);
     }
     @Transactional(readOnly=true) public Page<OccurrenceDtos.Response> list(Pageable pageable){return occurrences.findAll(pageable).map(mapper::toResponse);}
+
+    /**
+     * Reads the images for the notification e-mail without ever failing the occurrence. A bad image
+     * (too large, unsupported type, malformed base64, read error) is logged and the occurrence is kept;
+     * the e-mail is simply sent without the images that could not be read.
+     */
+    private List<EmailService.InlineImage> readImagesBestEffort(List<MultipartFile> files,List<String> encoded,List<OccurrenceDtos.ImageContent> items,UUID occurrenceId){
+        try { return imageReader.read(files,encoded,items); }
+        catch (RuntimeException ex){
+            log.warn("Could not read the image(s) for occurrence {}; the occurrence was saved and the e-mail will be sent without them: {}",occurrenceId,ex.getMessage());
+            return List.of();
+        }
+    }
 
     private static Map<String,Object> model(String title,String message,Map<String,String> details){
         Map<String,Object> model=new LinkedHashMap<>();

@@ -90,10 +90,17 @@ class OccurrenceServiceTests {
         verifyNoInteractions(occurrences,email);
     }
 
-    @Test void createRejectsInvalidImagesBeforeAnyDatabaseWork(){
+    @Test void createSavesTheOccurrenceEvenWhenTheImagesCannotBeRead(){
+        // The image only enriches the e-mail; a failure reading it must not block the occurrence.
         when(imageReader.read(any(),any(),any())).thenThrow(ApiException.badRequest("Unsupported image type"));
-        assertThatThrownBy(()->service.create(request(),null,null)).isInstanceOf(ApiException.class);
-        verifyNoInteractions(occurrences,email,problems,materials,users);
+        when(users.notificationRecipients()).thenReturn(List.of("a@example.com"));
+        var result=service.create(request(),null,null);
+        assertThat(result).isNotNull();
+        verify(occurrences).save(any(Occurrence.class));
+        // E-mails still go out, just without any image.
+        var messages=sentMessages();
+        assertThat(messages).extracting(EmailService.HtmlMessage::recipient).containsExactly("a@example.com","quality@example.com");
+        assertThat(messages).allSatisfy(m->assertThat(m.images()).isEmpty());
     }
 
     @Test void listMapsOccurrencePage(){Occurrence occurrence=mock(Occurrence.class);when(occurrences.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(occurrence)));when(mapper.toResponse(occurrence)).thenReturn(new OccurrenceDtos.Response(UUID.randomUUID(),UUID.randomUUID(),UUID.randomUUID(),UUID.randomUUID(),1,Instant.now()));assertThat(service.list(PageRequest.of(0,20))).hasSize(1);}

@@ -160,23 +160,29 @@ class OccurrenceFlowTests {
         }
     }
 
-    @Test void invalidImagesAreRejectedAndNothingIsSent() throws Exception {
-        mvc.perform(post("/api/v1/occurrences").contentType(MediaType.APPLICATION_JSON)
-                        .content(json(2, userId, "[{\"name\":\"x.txt\",\"data\":\"" + base64("not an image".getBytes()) + "\"}]")))
-                .andExpect(status().isBadRequest());
-        mvc.perform(post("/api/v1/occurrences").contentType(MediaType.APPLICATION_JSON).content(json(2, userId, "[{\"data\":\"***\"}]")))
-                .andExpect(status().isBadRequest());
+    @Test void malformedRequestShapeIsStillRejected() throws Exception {
+        // Request-shape problems (missing data, too many images) remain 400: they are malformed requests,
+        // validated before the service runs.
         mvc.perform(post("/api/v1/occurrences").contentType(MediaType.APPLICATION_JSON).content(json(2, userId, "[{\"name\":\"sem-dados\"}]")))
                 .andExpect(status().isBadRequest());
         mvc.perform(post("/api/v1/occurrences").contentType(MediaType.APPLICATION_JSON).content(json(2, userId, jsonImages(OccurrenceDtos.MAX_IMAGES + 1))))
                 .andExpect(status().isBadRequest());
-        mvc.perform(form(2, userId.toString()).file(new MockMultipartFile("images", "vazio.png", "image/png", new byte[0])))
-                .andExpect(status().isBadRequest());
-        mvc.perform(form(2, userId.toString()).file(new MockMultipartFile("images", "grande.png", "image/png", new byte[10 * 1024 + 1])))
-                .andExpect(status().isContentTooLarge());
-
         verifyNoInteractions(sender);
-        verify(users, never()).notificationRecipients();
+    }
+
+    @Test void badImageContentDoesNotBlockTheOccurrence_itIsSavedAndEmailedWithoutThatImage() throws Exception {
+        // The image is only used to enrich the e-mail. A bad image (not a real image, invalid base64, empty)
+        // must NOT prevent the occurrence from being saved: it is created and the e-mails are sent without it.
+        mvc.perform(post("/api/v1/occurrences").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(2, userId, "[{\"name\":\"x.txt\",\"data\":\"" + base64("not an image".getBytes()) + "\"}]")))
+                .andExpect(status().isCreated());
+        mvc.perform(post("/api/v1/occurrences").contentType(MediaType.APPLICATION_JSON).content(json(2, userId, "[{\"data\":\"***\"}]")))
+                .andExpect(status().isCreated());
+        mvc.perform(form(2, userId.toString()).file(new MockMultipartFile("images", "vazio.png", "image/png", new byte[0])))
+                .andExpect(status().isCreated());
+
+        // Three occurrences created, each sending to the manager and the problem contact: 6 e-mails, all without images.
+        for (MimeMessage mime : sentMessages(6)) assertThat(inlineImages(mime)).isZero();
     }
 
     @Test void invalidFieldsAreRejectedWithBadRequest() throws Exception {
