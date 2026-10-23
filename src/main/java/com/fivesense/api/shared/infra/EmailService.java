@@ -49,6 +49,7 @@ public class EmailService {
 
     @Async(AsyncConfiguration.MAIL_EXECUTOR)
     public void sendHtml(HtmlMessage request){
+        log.info("Preparing occurrence e-mail to {} (subject: {})",maskRecipient(request.recipient()),request.subject());
         try {
             Map<String,Object> model=new HashMap<>(request.model());
             model.put("images",request.images());
@@ -62,7 +63,15 @@ public class EmailService {
             helper.setText(request.plainText(),html);
             for(InlineImage image:request.images())helper.addInline(image.contentId(),new ByteArrayResource(image.content()),image.contentType());
             mailSender.send(message);
-        } catch (Exception ex){log.warn("Email delivery failed: {}",rootCause(ex));}
+            log.info("Occurrence e-mail sent to {}",maskRecipient(request.recipient()));
+        } catch (Exception ex){log.warn("Email delivery failed to {}: {}",maskRecipient(request.recipient()),rootCause(ex),ex);}
+    }
+
+    /** Logs only the recipient domain, never the full address, to avoid leaking PII. */
+    private static String maskRecipient(String recipient){
+        if(recipient==null||recipient.isBlank())return "<null>";
+        int at=recipient.indexOf('@');
+        return at>0?"***"+recipient.substring(at):"***";
     }
 
     /** Only the exception type is logged: messages can carry addresses or message content. */
