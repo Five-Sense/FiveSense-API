@@ -43,6 +43,23 @@ Os artefatos `Dockerfile` e `compose.yaml` existem. `.env.example` documenta pla
 
 `.env.example` e `.env` incluem todas as variáveis consumidas pela aplicação. `application.properties` carrega `.env` em execução direta; Docker Compose também usa o arquivo para preencher o ambiente do container. SMTP pode ficar sem configuração se os fluxos de envio de e-mail não forem usados.
 
+## SMTP com Gmail
+
+As notificações de ocorrência (corpo de texto + imagem anexada) são enviadas via `EmailService` usando a configuração SMTP padrão do Spring Mail. Para entregar no Gmail, use:
+
+```properties
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=sua-conta@gmail.com
+MAIL_PASSWORD=senha-de-app-de-16-digitos
+MAIL_SMTP_AUTH=true
+MAIL_STARTTLS=true
+```
+
+- O Gmail exige **verificação em 2 etapas** ativa e uma **Senha de App** (16 dígitos) gerada em <https://myaccount.google.com/apppasswords>. A senha normal da conta não funciona para SMTP.
+- `MAIL_USERNAME` também vira o remetente (`From`). O responsável que recebe a ocorrência é `crisjesusdofigmamobile@gmail.com` (coluna `problem.related_email`, definida pela migração V7); administradores/gestores ativos também recebem a notificação.
+- O anexo é um MIME `multipart/mixed` padrão, lido de um arquivo temporário e descartado após o envio — compatível com Gmail e demais provedores. O corpo é texto simples codificado em UTF-8, preservando acentos.
+
 ## Usuário inicial
 
 Cadastre qualquer usuário por `POST /api/v1/users`. O campo `role` continua armazenado e retornado como dado da conta, mas não autoriza nem restringe endpoints.

@@ -32,7 +32,7 @@ public class EmailService {
     public boolean sendWithAttachment(String recipient,String subject,String body,Path attachment,String attachmentName){
         try {
             MimeMessage message=mailSender.createMimeMessage();
-            MimeMessageHelper helper=new MimeMessageHelper(message,true);
+            MimeMessageHelper helper=new MimeMessageHelper(message,MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,java.nio.charset.StandardCharsets.UTF_8.name());
             if(!from.isBlank())helper.setFrom(from);
             helper.setTo(recipient);
             helper.setSubject(subject);

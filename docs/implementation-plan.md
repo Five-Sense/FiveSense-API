@@ -18,6 +18,7 @@ API de avaliação mobile implementada como monólito Spring MVC com PostgreSQL 
 - [x] Login por `username`, admin padrão `admin`/`admin@gmail.com`/`admin123` (V2), perfis por header `X-User-Role` e ajuste de estoque `PATCH /materials/{id}/stock` (decisão 0005).
 - [x] Documentação estática revisada e servida em `/docs` e `/api/docs` (decisão 0006).
 - [x] Carga inicial 5S por migrations `V3`–`V6`: visualizador, materiais, equipes e problemas (decisão 0007).
+- [x] Migration `V7`: responsável da ocorrência (`problem.related_email`) e e-mail do admin padrão atualizados para `crisjesusdofigmamobile@gmail.com`; `EmailService` com MIME UTF-8; SMTP Gmail documentado em `.env.example`/`operations.md`.
 ## Pendências externas
 
 - [ ] Informar `DATABASE_PASSWORD` no `.env` local e testar a conexão Supabase.
