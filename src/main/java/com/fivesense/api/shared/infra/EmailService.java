@@ -55,11 +55,7 @@ public class EmailService {
             Context context=new Context(LOCALE,model);
             String html=templates.process(request.template(),context);
             MimeMessage message=mailSender.createMimeMessage();
-<<<<<<< HEAD
-            MimeMessageHelper helper=new MimeMessageHelper(message,MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,java.nio.charset.StandardCharsets.UTF_8.name());
-=======
             MimeMessageHelper helper=new MimeMessageHelper(message,true,StandardCharsets.UTF_8.name());
->>>>>>> f0e52f7264ce6c31a4dd9c665e832c82778e6a61
             if(!from.isBlank())helper.setFrom(from);
             helper.setTo(request.recipient());
             helper.setSubject(request.subject());
