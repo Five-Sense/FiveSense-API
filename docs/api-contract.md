@@ -48,20 +48,19 @@ O admin padrão (`admin` / `admin@gmail.com` / `admin123`) é criado pela migrat
 | GET | `/materials/options` | Opções `id`/`name` para ocorrência |
 | POST/PUT/DELETE | `/materials[/{id}]` | CRUD; create `201`, delete `204` (ADMIN/MANAGER) |
 | PATCH | `/materials/{id}/stock` | `{ "delta": -3 }` (inteiro não zero; negativo retira, positivo repõe). Resultado deve ficar entre 0 e 999, senão `400`. Dispara alerta de estoque baixo ao cruzar o mínimo. Qualquer perfil. |
-| POST | `/occurrences/images` | `multipart/form-data` com campo `image` (máx. 5MB); `201 Created` com `{ "imageId": "<uuid>" }` |
-| POST | `/occurrences` | `{ "problemId": "<uuid>", "materialId": "<uuid>", "affectedQuantity": 2, "reportedByUserId": "<uuid>", "imageId": "<uuid>" }` (`imageId` opcional); `201 Created` |
+| POST | `/occurrences` | Registra a ocorrência e enfileira os e-mails. Aceita dois formatos. **`application/json`**: `{ "problemId": "<uuid>", "materialId": "<uuid>", "affectedQuantity": 2, "reportedByUserId": "<uuid>", "images": [ { "name": "foto.png", "data": "<base64>" } ] }` (`images` opcional, até 5; `name` opcional; `data` em base64, puro ou `data:image/png;base64,...`). **`multipart/form-data`**: campos `problemId`, `materialId`, `affectedQuantity`, `reportedByUserId` e quantas partes `images` forem necessárias (até 5), cada uma sendo um arquivo binário ou um texto em base64. `201 Created` |
 | GET | `/occurrences?page&size` | Página de ocorrências |
 
-Ocorrências não alteram estoque. E-mail permanece best effort conforme configuração SMTP. Quando a ocorrência informa `imageId`, a imagem é lida do arquivo temporário correspondente, anexada ao e-mail dos destinatários e do contato do problema, e o arquivo é excluído após o envio. A imagem nunca é persistida no banco.
+Ocorrências não alteram estoque. A API não oferece mais upload separado de imagens nem aceita `imageId`/`imageIds`: a imagem viaja junto com a ocorrência (binário ou base64), é validada, mantida apenas em memória, embutida no corpo de um e-mail HTML formatado com Thymeleaf (`templates/email/occurrence.html`) e descartada; nunca é gravada em disco ou no banco. Os e-mails (ADMIN/MANAGER ativos e contato do problema) são enviados depois do commit, em uma thread separada (`mailExecutor`), então a resposta `201` não espera o SMTP; a entrega é best effort, com timeouts de conexão/leitura, e uma falha só aparece nos logs. O usuário (`reportedByUserId`) precisa existir e estar ativo, senão `400`.
 
 ## DTOs principais e validação
 
 - `User CreateRequest`: `name`, `username`, `email`, `password` (até 255), `role` (`ADMIN`, `MANAGER` ou `VIEWER`). `UpdateRequest`: `name`, `username`, `email`, `status`. `LoginRequest`: `username`, `password`.
-- `Team UpsertRequest`: `name` ou `code` obrigatório; `representatives` e `schedule` texto até 255. `StatusRequest.status`: enum de status 5S.
+- `Team UpsertRequest`: `name` ou `code` obrigatório; `representatives` texto até 255; `startTime` e `endTime` opcionais no formato `HH:mm` de 24 horas (ex.: `07:30` e `09:00`): os dois ou nenhum, com o fim depois do início, senão `400` com `errors`. A resposta (`TeamResponse`) devolve `startTime` e `endTime` (ou `null`); o campo antigo `schedule` não existe mais e, se enviado, é ignorado. `StatusRequest.status`: enum de status 5S.
 - `Problem UpsertRequest`: nome até 20, e-mail relacionado, resposta padrão e `active` opcional.
 - `Material UpsertRequest`: nome até 55, quantidades 0–999 e `active` opcional.
-- `Occurrence CreateRequest`: IDs de problema, material e usuário; `affectedQuantity` positivo; `imageId` opcional, obtido no upload temporário.
-- `Occurrence image upload`: `multipart/form-data` com campo `image` obrigatório (arquivo não vazio, limite de 5MB). Resposta `ImageUploadResponse { imageId }`.
+- `Occurrence CreateRequest` (JSON): IDs de problema, material e usuário; `affectedQuantity` positivo; `images` opcional (até 5 itens `{ name?, data }`). A variante multipart usa os mesmos campos de texto mais as partes `images`.
+- Imagens da ocorrência: até 5 por ocorrência, cada uma não vazia, com até 5MB já decodificada (`OCCURRENCE_IMAGE_MAX_SIZE`; a requisição multipart inteira aceita até 25MB, `OCCURRENCE_IMAGE_MAX_REQUEST_SIZE`). O tipo real é detectado pelo conteúdo e só PNG, JPEG, GIF e WebP são aceitos. Erros: `400` (mais de 5, vazia, tipo não suportado, base64 inválido, usuário inexistente/inativo, campos inválidos) e `413` (imagem acima do limite). Nenhuma imagem é guardada se a requisição for rejeitada.
 - Respostas paginadas incluem `content`, `totalElements`, `totalPages`, `size` e `number`.
 
 ## Respostas e erros

@@ -30,5 +30,5 @@ Hospedagem e infraestrutura ainda não foram escolhidas.
 - Flyway está na versão esperada.
 - Conexão PostgreSQL e SMTP funcionam.
 - Login simples retorna a identidade cadastrada; rotas ficam abertas.
-- Fluxo de ocorrência notifica todos os usuários ADMIN e MANAGER por e-mail, sem anexo de imagem.
+- Fluxo de ocorrência notifica todos os usuários ADMIN e MANAGER ativos por e-mail HTML (Thymeleaf), com as imagens embutidas, sem atrasar a resposta HTTP. Se o e-mail não chegar, procurar `Email delivery failed` nos logs (a causa raiz aparece como tipo da exceção, ex. `ConnectException`).
 - Não há segredo ou stack trace em logs/respostas.

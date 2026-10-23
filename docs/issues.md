@@ -8,6 +8,9 @@
 - Configuração padrão do PostgreSQL Supabase em `.env.example`.
 - Schema Flyway inicial alinhado ao modelo atual da API.
 - [2026-10-02] Imagem temporária no fluxo de ocorrência: upload em `POST /occurrences/images`, anexo no e-mail e exclusão após o envio; sem persistência no banco (decisão 0004).
+- [2026-10-19] Várias imagens por ocorrência (até 5) e upload também como texto base64 (multipart ou JSON); anexos com extensão do tipo real; sem persistência no banco (decisão 0009).
+- [2026-10-19] Imagens enviadas na própria ocorrência (binário ou base64, sem `imageId`), e-mail HTML com Thymeleaf, envio assíncrono com timeouts de SMTP e validação do usuário que reporta; corrige o carregamento infinito do app (decisão 0010).
+- [2026-10-19] Horário da equipe passa a ser um intervalo (`startTime` e `endTime` em `HH:mm`, colunas `start_time`/`end_time`, migration V7, validação na API e CHECK no banco, exemplos do site corrigidos); decisão 0011.
 
 - [2026-10-09] Login por `username`, admin padrão (migration V2), perfis ADMIN/MANAGER/VIEWER via header `X-User-Role` e `PATCH /materials/{id}/stock` (decisão 0005).
 - [2026-10-09] Site `docs/site/index.html` revisado (login por username, forgot-password, perfis, headers, ajuste de estoque) e publicado em `/docs` (decisão 0006).

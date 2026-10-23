@@ -13,7 +13,7 @@ Five Sense é uma API REST para apoiar a avaliação mobile das atividades 5S de
 ## Dados e operações
 
 - Cada usuário tem e-mail único e estado ativo/inativo.
-- Equipes mantêm representantes, horário e estado 5S em texto/campos simples.
+- Equipes mantêm representantes (texto), intervalo de horário (`startTime` e `endTime` em `HH:mm`) e estado 5S.
 - Materiais mantêm saldo e limite mínimo; ocorrências não alteram o saldo.
 - Ocorrências referenciam problema, material e usuário responsável.
 - Listagens aceitam paginação; erros seguem respostas HTTP documentadas.

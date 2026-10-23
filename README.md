@@ -40,8 +40,8 @@ Consulte `docs/architecture.md` para dependências permitidas e `docs/domains.md
 - Usuários são criados como ativos; o papel é dado informativo.
 - Usuários e papéis `ADMIN`, `MANAGER` e `VIEWER`.
 - CRUD de problemas.
-- Registro de ocorrências com problema, material, quantidade e notificação a todos os Admins e Gestores por e-mail; a quantidade não altera o estoque e imagens estão fora do escopo.
-- CRUD de equipes, representantes textuais (até 255 caracteres), faixa/horário e status de execução do 5S.
+- Registro de ocorrências com problema, material, quantidade e notificação a todos os Admins e Gestores por e-mail; a quantidade não altera o estoque; até 5 imagens por ocorrência seguem apenas no e-mail HTML, sem persistência.
+- CRUD de equipes, representantes textuais (até 255 caracteres), intervalo de horário (`startTime` e `endTime` em `HH:mm`) e status de execução do 5S.
 - Consulta à organização dos horários de cada equipe (não é calendário de eventos).
 - CRUD e consulta de materiais, quantidades e limites de estoque.
 - Alertas de estoque e notificações por e-mail.

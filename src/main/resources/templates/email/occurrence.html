@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title}">Five Sense</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f3f5f7;font-family:Arial,Helvetica,sans-serif;color:#1f2933;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f3f5f7;padding:24px 0;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:8px;overflow:hidden;">
+                <tr>
+                    <td style="background-color:#0b6e4f;padding:20px 28px;color:#ffffff;font-size:14px;letter-spacing:1px;">FIVE SENSE &middot; 5S</td>
+                </tr>
+                <tr>
+                    <td style="padding:28px;">
+                        <h1 style="margin:0 0 16px 0;font-size:22px;line-height:28px;" th:text="${title}">Título</h1>
+                        <p th:if="${message != null and !message.isBlank()}" style="margin:0 0 20px 0;font-size:15px;line-height:22px;white-space:pre-line;" th:text="${message}">Mensagem</p>
+                        <table th:if="${details != null and !details.isEmpty()}" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;">
+                            <tr th:each="detail : ${details}">
+                                <td style="padding:8px 12px;border-bottom:1px solid #e4e7eb;color:#616e7c;width:38%;" th:text="${detail.key}">Campo</td>
+                                <td style="padding:8px 12px;border-bottom:1px solid #e4e7eb;" th:text="${detail.value}">Valor</td>
+                            </tr>
+                        </table>
+                        <div th:if="${!images.isEmpty()}" style="margin-top:24px;">
+                            <p style="margin:0 0 12px 0;font-size:14px;color:#616e7c;" th:text="${images.size() == 1 ? 'Imagem enviada com a ocorrência' : 'Imagens enviadas com a ocorrência'}">Imagens</p>
+                            <img th:each="image : ${images}" th:src="'cid:' + ${image.contentId()}" th:alt="${image.name()}"
+                                 style="display:block;max-width:100%;height:auto;margin:0 0 12px 0;border-radius:4px;border:1px solid #e4e7eb;" alt="Imagem da ocorrência">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:16px 28px;background-color:#f3f5f7;font-size:12px;color:#7b8794;">Mensagem automática do Five Sense. Não responda a este e-mail.</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

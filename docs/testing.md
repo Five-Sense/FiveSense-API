@@ -19,7 +19,7 @@ Provar comportamento, integração real com PostgreSQL 18 e preservação da arq
 - Usar `@SpringBootTest`/MockMvc ou suporte MVC equivalente e PostgreSQL real em container.
 - Não substituir PostgreSQL por H2.
 - Executar migrações Flyway no banco do teste.
-- Simular apenas fronteiras externas, como SMTP, mantendo seus contratos verificáveis. Armazenamento de imagens não existe no escopo atual.
+- Simular apenas fronteiras externas, como SMTP, mantendo seus contratos verificáveis. Imagens de ocorrência são testadas em memória (leitor de imagens, e-mail HTML com Thymeleaf e fluxo MockMvc); nada é armazenado.
 - Nome recomendado: `*IT`; dados independentes e limpeza previsível.
 
 ### Testes de arquitetura e fitness functions

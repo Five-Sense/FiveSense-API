@@ -1,6 +1,7 @@
 package com.fivesense.api.shared.error;
 
 import org.springframework.http.*;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -12,6 +13,13 @@ public class ApiExceptionHandler {
     ProblemDetail handleApi(ApiException ex){return problem(ex.getStatus(),ex.getMessage());}
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ProblemDetail handleValidation(MethodArgumentNotValidException ex){
+        var p=problem(HttpStatus.BAD_REQUEST,"Request validation failed");
+        p.setProperty("errors",ex.getBindingResult().getFieldErrors().stream().map(e->e.getField()+": "+e.getDefaultMessage()).toList());
+        return p;
+    }
+    /** Form (multipart) binding and validation failures, e.g. a malformed UUID or a non-positive quantity. */
+    @ExceptionHandler(BindException.class)
+    ProblemDetail handleBinding(BindException ex){
         var p=problem(HttpStatus.BAD_REQUEST,"Request validation failed");
         p.setProperty("errors",ex.getBindingResult().getFieldErrors().stream().map(e->e.getField()+": "+e.getDefaultMessage()).toList());
         return p;

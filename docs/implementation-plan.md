@@ -11,6 +11,9 @@ API de avaliação mobile implementada como monólito Spring MVC com PostgreSQL 
 - Rotas abertas; o campo `role` é informativo.
 - CRUD de equipes, problemas e materiais; criação e listagem de ocorrências.
 - [x] Imagem temporária na ocorrência: upload em `POST /occurrences/images`, anexo no e-mail e exclusão após o envio, sem persistência no banco (decisão 0004).
+- [x] Várias imagens por ocorrência (até 5) e upload como arquivo ou texto base64 em multipart/JSON, com anexos de tipo correto (decisão 0009).
+- [x] Horário da equipe como intervalo `startTime`/`endTime` em `HH:mm`, com migration V7 e validação na API e no banco (decisão 0011).
+- [x] Imagens na própria ocorrência (binário/base64, sem `imageId`), e-mail HTML com Thymeleaf, envio assíncrono com timeouts de SMTP e validação do usuário que reporta (decisão 0010).
 - Flyway com schema inicial correspondente ao modelo atual.
 - Configuração do Supabase em `.env.example` e carregamento local por `.env`.
 - Referência pesquisável dos endpoints em `docs/site/index.html`.

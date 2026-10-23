@@ -2,7 +2,7 @@
 
 ## Visão geral
 
-A Five Sense API será um monólito Spring Boot com Spring MVC e PostgreSQL. A arquitetura deve permanecer direta: controllers HTTP chamam services de aplicação; services aplicam regras e coordenam persistência/integrações; MapStruct converte DTOs e entidades; infraestrutura concentra JPA e e-mail. O upload de imagens é restrito ao fluxo de ocorrência: a imagem é guardada apenas em arquivo temporário, anexada ao e-mail e excluída após o envio; nunca é persistida no banco (ver decisão 0004).
+A Five Sense API será um monólito Spring Boot com Spring MVC e PostgreSQL. A arquitetura deve permanecer direta: controllers HTTP chamam services de aplicação; services aplicam regras e coordenam persistência/integrações; MapStruct converte DTOs e entidades; infraestrutura concentra JPA e e-mail. O upload de imagens é restrito ao fluxo de ocorrência: até 5 imagens chegam junto da própria requisição (binário ou base64), são validadas, mantidas apenas em memória, embutidas no e-mail HTML (Thymeleaf) e descartadas; nunca são gravadas em disco ou no banco (ver decisões 0004, 0009 e 0010). O envio de e-mail roda em uma thread separada (`mailExecutor`), fora da requisição HTTP.
 
 Exceção aprovada pelo pedido humano de 2026-10-02: `docs/site/index.html` é um site estático somente para navegação da documentação da API. Não faz parte da aplicação Spring, não consome endpoints em runtime, não adiciona dependências e não amplia o produto para uma UI operacional. Também em 2026-10-02 o humano substituiu o desenho de autenticação/autorização SpecFirst por login simples para avaliação mobile.
 
@@ -68,8 +68,8 @@ Dependência entre capacidades deve ocorrer pelo service público da capacidade 
 
 ## Integrações
 
-- **E-mail:** Spring Mail; `EmailService.sendWithAttachment` envia MimeMessage com anexo quando a ocorrência tem imagem temporária. Templates Thymeleaf somente se houver benefício real.
-- **Imagens:** apenas no fluxo de ocorrência e somente em arquivo temporário (`TemporaryImageStore` em `occurrences/infra`). Anexadas ao e-mail e removidas após o envio; sem persistência no banco (decisão 0004).
+- **E-mail:** Spring Mail + Thymeleaf (somente para templates de e-mail, em `src/main/resources/templates/email`). `EmailService` (`shared/infra`) é assíncrono (`@Async("mailExecutor")`, pool configurado em `shared/config/AsyncConfiguration`, fila limitada; fila cheia descarta e registra) e tem timeouts de SMTP (`MAIL_CONNECTION_TIMEOUT_MS`, `MAIL_TIMEOUT_MS`). `sendHtml` renderiza o template e embute as imagens no corpo (`cid:`); `send` envia texto simples (alertas de estoque). Falhas são só logadas, nunca propagadas.
+- **Imagens:** apenas no fluxo de ocorrência, em memória (`OccurrenceImageReader` em `occurrences/app`). Embutidas no e-mail e descartadas; sem disco e sem persistência no banco (decisões 0004, 0009 e 0010).
 - **Login:** e-mail/senha comparados diretamente. Todas as rotas são abertas; `role` é informativo.
 - **OpenAPI:** springdoc documenta endpoints públicos e erros.
 

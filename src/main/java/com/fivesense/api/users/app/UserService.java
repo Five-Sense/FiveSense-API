@@ -38,5 +38,8 @@ public class UserService {
     }
     @Transactional(readOnly=true)
     public List<String> notificationRecipients(){return users.findByRoleInAndStatus(List.of(UserRole.ADMIN,UserRole.MANAGER),UserStatus.ACTIVE).stream().map(AppUser::getEmail).toList();}
+    /** Returns the name of the active user with this id; unknown or inactive users are rejected before any record is created. */
+    @Transactional(readOnly=true)
+    public String requireActive(UUID id){return users.findById(id).filter(u->u.getStatus()==UserStatus.ACTIVE).orElseThrow(()->ApiException.badRequest("Reporting user is unavailable")).getName();}
     private static String normalize(String value){return value.trim().toLowerCase(Locale.ROOT);}
 }

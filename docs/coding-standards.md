@@ -39,7 +39,7 @@
 - Não há autorização por papel nesta avaliação; todas as rotas são públicas.
 - Senha de avaliação é persistida como texto em `app_user.password`; nunca registrar senha em logs.
 - Logs estruturados usam IDs, ação e resultado.
-- Uploads, caso sejam aprovados em uma futura alteração de escopo, validam tamanho, tipo real e nome gerado pelo servidor. A API atual não recebe arquivos nem imagens.
+- Uploads (imagens da ocorrência) validam tamanho, tipo real pelo conteúdo e nome sanitizado pelo servidor, e nunca são persistidos.
 
 ## Organização
 

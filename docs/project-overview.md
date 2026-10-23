@@ -21,7 +21,7 @@ Entregar uma API REST segura e documentada que centralize o gerenciamento de 5S 
 - Recuperação e alteração de senha.
 - Gestão de usuários: Admin cria Gestores e Visualizadores; Gestor cria e gerencia Visualizadores.
 - Gestão de problemas pelo Gestor e consulta pelo Visualizador.
-- Registro de ocorrências ligadas a problema e material, com notificação por e-mail; imagens fora do escopo da API.
+- Registro de ocorrências ligadas a problema e material, com notificação por e-mail HTML assíncrona; até 5 imagens por ocorrência seguem só no e-mail, sem persistência.
 - Gestão de equipes, representantes, horários e status de 5S.
 - Organização/exibição dos horários atribuídos a cada equipe, sem calendário de eventos.
 - Gestão e consulta de materiais, estoque mínimo/máximo e alertas.
@@ -48,5 +48,5 @@ Entregar uma API REST segura e documentada que centralize o gerenciamento de 5S 
 ## Restrições e riscos
 
 - O PDF contém requisitos duplicados e contraditórios; eles estão destacados em `requirements.md`.
-- A integração PostgreSQL exige credenciais do Supabase configuradas. E-mails são best effort. Imagens e dashboards estão fora do escopo; quantidade afetada de ocorrência não altera estoque.
+- A integração PostgreSQL exige credenciais do Supabase configuradas. E-mails são best effort e assíncronos. Dashboards e imagens persistidas estão fora do escopo (imagens de ocorrência só vão no e-mail); quantidade afetada de ocorrência não altera estoque.
 - O PDF fonte está fora do repositório, reduzindo a rastreabilidade; sua inclusão versionada deve ser decidida.
