@@ -55,9 +55,11 @@ public class OccurrenceService {
         var contactMessage=new EmailService.HtmlMessage(problem.email(),contactTitle,plainText(contactTitle,problem.defaultResponse(),contactDetails,images.size()),TEMPLATE,model(contactTitle,problem.defaultResponse(),contactDetails),images);
 
         AfterCommit.run(()->{
+            log.info("afterCommit fired for occurrence {}: dispatching {} recipient e-mail(s) + contact {}",occurrence.getId(),recipients.size(),problem.email());
             recipients.forEach(address->email.sendHtml(new EmailService.HtmlMessage(address,notification.subject(),notification.plainText(),notification.template(),notification.model(),notification.images())));
             email.sendHtml(contactMessage);
         });
+        log.info("Occurrence {} create() returning; e-mail dispatch registered for after commit",occurrence.getId());
         return mapper.toResponse(occurrence);
     }
     @Transactional(readOnly=true) public Page<OccurrenceDtos.Response> list(Pageable pageable){return occurrences.findAll(pageable).map(mapper::toResponse);}
